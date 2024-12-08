@@ -19,8 +19,7 @@ public class ArticleSplitter {
 
 
         chapter = chapter.replaceAll("\\u00A0", " ").replaceAll("\\r", "").trim();
-//            String[] parts = chapter.split("(?m)(?=^Article \\d+$)");  Xoris gramma meta to noumero
-        String[] parts = chapter.split("(?m)(?=^Article \\d+[a-z]?$)"); // Me mikro gramma meta to noumero
+        String[] parts = chapter.split("(?m)(?=^Article \\d+[a-z]?$)");
 
         for (String part : parts) {
             String trimmedPart = part.trim();
