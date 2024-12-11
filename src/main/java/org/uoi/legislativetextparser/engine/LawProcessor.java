@@ -1,6 +1,5 @@
 package org.uoi.legislativetextparser.engine;
 
-import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uoi.legislativetextparser.model.Article;
@@ -30,43 +29,66 @@ public class LawProcessor {
      *
      * @throws IOException if an I/O error occurs using @SneakyThrows
      */
-    @SneakyThrows
     public void processLegislativeDocument() {
-
-        // Convert PDF to text
         long startTime = System.currentTimeMillis();
         log.info("Starting legislative text processing...");
-        log.info("Extracting text from the legislative document...");
-        PdfToTxtExtractor.extractTextFromPDF(new File(lawPath));
-        log.info("Text extraction completed successfully.");
 
-        // Clean text
-        log.info("Cleaning text from the legislative document by removing unnecessary sections and characters...");
+        try {
+            // Convert PDF to text
+            log.info("Extracting text from the legislative document...");
+            PdfToTxtExtractor.extractTextFromPDF(new File(lawPath));
+            log.info("Text extraction completed successfully.");
+        } catch (IOException e) {
+            log.error("I/O Error during PDF to text extraction: {}", e.getMessage(), e);
+            return;
+        }
+
         File txtFile = new File("src/main/resources/output/selectedLaw.txt");
+        try {
+            // Clean text
+            log.info("Cleaning text from the legislative document by removing unnecessary sections and characters...");
+            TxtCleaner txtCleaner = new TxtCleaner();
+            txtCleaner.cleanText(Files.readString(txtFile.toPath()));
+            log.info("Text cleaning completed successfully.");
+        } catch (IOException e) {
+            log.error("I/O Error during text cleaning: {}", e.getMessage(), e);
+            return;
+        }
 
-        TxtCleaner txtCleaner = new TxtCleaner();
-        txtCleaner.cleanText(Files.readString(txtFile.toPath()));
-        log.info("Text cleaning completed successfully.");
+        try {
+            // Split into chapters
+            log.info("Splitting the document into chapters...");
+            txtFile = new File("src/main/resources/output/cleanedSelectedLaw.txt");
+            ChapterSplitter.splitIntoChapters(Files.readString(txtFile.toPath()));
+            log.info("Chapters saved successfully.");
+        } catch (IOException e) {
+            log.error("I/O Error during chapter splitting: {}", e.getMessage(), e);
+            return;
+        }
 
-        // Split into chapters
-        log.info("Splitting the document into chapters...");
-        txtFile = new File("src/main/resources/output/cleanedSelectedLaw.txt");
-        ChapterSplitter.splitIntoChapters(Files.readString(txtFile.toPath()));
-        log.info("Chapters saved successfully.");
+        Law law;
+        try {
+            // Build the law object
+            log.info("Building the law object...");
+            law = constructLawObject();
+            log.info("Law object built successfully.");
+        } catch (NullPointerException | IOException e) {
+            log.error("Null pointer encountered during law object construction: {}", e.getMessage(), e);
+            return;
+        }
 
-        // Split into articles, then paragraphs, and finally build the law object
-        log.info("Building the law object...");
-        Law law = constructLawObject();
-        log.info("Law object built successfully.");
-
-        // Write the law object to a JSON file
-        log.info("Writing the law object to JSON file at 'src/main/resources/output/lawObject.json'...");
-        Files.writeString(new File("src/main/resources/output/lawObject.json").toPath(), law.toString());
-
-        // Finish the process and exit
+        try {
+            // Write the law object to a JSON file
+            log.info("Writing the law object to JSON file at 'src/main/resources/output/lawObject.json'...");
+            Files.writeString(new File("src/main/resources/output/lawObject.json").toPath(), law.toString());
+            log.info("Law object written successfully.");
+        } catch (IOException e) {
+            log.error("I/O Error writing law object to JSON file: {}", e.getMessage(), e);
+            return;
+        }
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;
-        log.info("Law object written successfully. Total time taken: {}s and {}ms.", seconds, milliseconds);
+        log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
         log.info("Exiting...");
     }
 
@@ -89,7 +111,7 @@ public class LawProcessor {
             int chapterNumber2 = extractChapterNumber(f2.getName());
             return Integer.compare(chapterNumber1, chapterNumber2);
         });
-        if (chapterFiles == null || chapterFiles.length == 0) {
+        if (chapterFiles.length == 0) {
             throw new IllegalArgumentException("No chapter files found in directory: " + CHAPTERS_DIR);
         }
 
@@ -109,25 +131,16 @@ public class LawProcessor {
 
                 int paragraphCounter = 1;
                 for (String paragraphText : paragraphTexts) {
-                    paragraphs.add(Paragraph
-                            .builder()
-                            .paragraphText(paragraphText)
-                            .paragraphNumber(paragraphCounter++)
-                            .build());
+                    Paragraph paragraph = new Paragraph.Builder(paragraphCounter++, paragraphText).build();
+                    paragraphs.add(paragraph);
                 }
-                articles.add(Article
-                        .builder()
-                        .articleNumber(articleCounter++)
-                        .paragraphs(paragraphs)
-                        .build());
+                Article article = new Article.Builder(articleCounter++, paragraphs).build();
+                articles.add(article);
             }
-            chapters.add(Chapter
-                    .builder()
-                    .chapterNumber(chapterCounter++)
-                    .articles(articles)
-                    .build());
+            Chapter chapter = new Chapter.Builder(chapterCounter++, articles).build();
+            chapters.add(chapter);
         }
-        return Law.builder().chapters(chapters).build();
+        return new Law.Builder(chapters).build();
     }
 
     /**
