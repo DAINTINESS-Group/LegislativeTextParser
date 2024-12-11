@@ -31,7 +31,6 @@ public class PdfToTxtExtractor {
      * Saves the extracted text to a file at ../resources/output/selectedLaw.txt.
      *
      * @param text the extracted text from the PDF
-     * @throws IOException
      */
     public static void saveToFile(String text) throws IOException {
         File txtOutputFile = new File("src/main/resources/output/selectedLaw.txt");

@@ -19,29 +19,33 @@ public class ChapterSplitter {
      *
      * @param text the cleaned input text, ready to be split into chapters
      */
-    @SneakyThrows
     public static void splitIntoChapters(String text) {
-        if (text == null || text.isEmpty()) {
-            throw new IllegalArgumentException("Text cannot be null or empty.");
-        }
-
-        String[] parts = text.split("(?=\\bCHAPTER\\s+[IVXLCDM]+)");
-        ArrayList<String> chapters = new ArrayList<>();
-
-        for (String part : parts) {
-            String trimmedPart = part.trim();
-            if (!trimmedPart.isEmpty()) {
-                chapters.add(trimmedPart);
+        try {
+            if (text == null || text.isEmpty()) {
+                throw new IllegalArgumentException("Text cannot be null or empty.");
             }
+
+            String[] parts = text.split("(?=\\bCHAPTER\\s+[IVXLCDM]+)");
+            ArrayList<String> chapters = new ArrayList<>();
+
+            for (String part : parts) {
+                String trimmedPart = part.trim();
+                if (!trimmedPart.isEmpty()) {
+                    chapters.add(trimmedPart);
+                }
+            }
+            saveToFile(chapters);
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
-        saveToFile(chapters);
     }
+
 
     /**
      * Saves each chapter to a separate file in the ../resources/output/chapters/ directory.
      *
      * @param chapters the list of chapters to save
-     * @throws IOException if an I/O error occurs
      */
     public static void saveToFile(List<String> chapters) throws IOException {
         File outputDir = new File("src/main/resources/output/chapters/");
