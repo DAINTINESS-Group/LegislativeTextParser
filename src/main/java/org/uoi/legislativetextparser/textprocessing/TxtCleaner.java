@@ -3,6 +3,7 @@ package org.uoi.legislativetextparser.textprocessing;
 import lombok.SneakyThrows;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,11 +96,15 @@ public class TxtCleaner {
      *
      * @param text the cleaned text to be saved
      */
-    @SneakyThrows
     public void saveTextToFile(String text) {
-        File cleanedTextFile = new File("src/main/resources/output/cleanedSelectedLaw.txt");
-        try (FileWriter writer = new FileWriter(cleanedTextFile)) {
-            writer.write(text);
+        try {
+            File cleanedTextFile = new File("src/main/resources/output/cleanedSelectedLaw.txt");
+            try (FileWriter writer = new FileWriter(cleanedTextFile)) {
+                writer.write(text);
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred while saving text to file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
