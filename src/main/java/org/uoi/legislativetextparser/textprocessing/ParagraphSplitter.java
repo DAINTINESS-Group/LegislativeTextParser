@@ -1,54 +1,45 @@
 package org.uoi.legislativetextparser.textprocessing;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility class for splitting articles into paragraphs.
  */
 public class ParagraphSplitter {
 
-    private static final int MEAN_LINE_BREAKS = 9;
-
     /**
-     * Splits the articles into paragraphs after every MEAN_LINE_BREAKS line break or continues
-     * until it finds a valid ending ('.' or ';').
+     * Splits the articles into paragraphs based on numbered sections (e.g., 1., 2., etc.).
      *
-     * @param article each article to be split into paragraphs
+     * @param article the article to be split into paragraphs
      * @return a list of paragraphs extracted from the article
      */
     public static List<String> splitIntoParagraphs(String article) {
 
         List<String> paragraphs = new ArrayList<>();
-        int totalLineBreaks = (int) article.chars().filter(ch -> ch == '\n').count();
-        if (totalLineBreaks < MEAN_LINE_BREAKS) {
-            paragraphs.add(article.trim());
-            return paragraphs;
+
+        Pattern pattern = Pattern.compile("(?<=\\n)\\(?\\d+[a-z]?+\\)?\\.?\\s");
+        Matcher matcher = pattern.matcher(article);
+
+        int start = 0;
+        while (matcher.find()) {
+            int end = matcher.start();
+
+            String paragraph = article.substring(start, end).trim();
+            if (!paragraph.isEmpty()) {
+                paragraphs.add(paragraph);
+            }
+            start = end;
         }
 
-        StringBuilder paragraphBuilder = new StringBuilder();
-        int lineBreakCount = 0;
-
-        for (String line : article.split("\\n")) {
-            paragraphBuilder.append(line).append("\n");
-            if (!line.trim().isEmpty()) {
-                lineBreakCount++;
-            }
-            if (lineBreakCount >= MEAN_LINE_BREAKS &&
-                    (paragraphBuilder.toString().trim().endsWith(".") || paragraphBuilder.toString().trim().endsWith(";"))) {
-
-                paragraphs.add(paragraphBuilder.toString().trim());
-                paragraphBuilder.setLength(0);
-                lineBreakCount = 0;
-            }
-        }
-        String remainingParagraph = paragraphBuilder.toString().trim();
+        String remainingParagraph = article.substring(start).trim();
         if (!remainingParagraph.isEmpty()) {
             paragraphs.add(remainingParagraph);
         }
+
         return paragraphs;
     }
-
 
 }
