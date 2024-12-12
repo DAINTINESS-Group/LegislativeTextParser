@@ -2,10 +2,7 @@ package org.uoi.legislativetextparser.engine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uoi.legislativetextparser.model.Article;
-import org.uoi.legislativetextparser.model.Chapter;
-import org.uoi.legislativetextparser.model.Law;
-import org.uoi.legislativetextparser.model.Paragraph;
+import org.uoi.legislativetextparser.model.*;
 import org.uoi.legislativetextparser.textprocessing.*;
 
 import java.io.File;
@@ -18,7 +15,7 @@ import java.util.List;
 public class LawProcessor {
 
     // Define the path to the legislative document for processing, the output directory for chapters, and the logger instance.
-    //    private static final String lawPath = "src/main/resources/input/Data_Act.pdf";
+    //private static final String lawPath = "src/main/resources/input/Data_Act.pdf";
     private static final String lawPath = "src/main/resources/input/AI_Law.pdf";
     private static final String CHAPTERS_DIR = "src/main/resources/output/chapters/";
     private static final Logger log = LoggerFactory.getLogger(LawProcessor.class);
@@ -27,7 +24,7 @@ public class LawProcessor {
      * Processes the legislative document by extracting text from the PDF, cleaning the text, splitting it into chapters,
      * and calling constructLawObject method to build the Law object.
      *
-     * @throws IOException if an I/O error occurs using @SneakyThrows
+     * @throws Exception if an error occurs
      */
     public void processLegislativeDocument() {
         long startTime = System.currentTimeMillis();
@@ -38,8 +35,8 @@ public class LawProcessor {
             log.info("Extracting text from the legislative document...");
             PdfToTxtExtractor.extractTextFromPDF(new File(lawPath));
             log.info("Text extraction completed successfully.");
-        } catch (IOException e) {
-            log.error("I/O Error during PDF to text extraction: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Error during PDF to text extraction: {}", e.getMessage(), e);
             return;
         }
 
@@ -90,6 +87,8 @@ public class LawProcessor {
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;
         log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
         log.info("Exiting...");
+
+        System.out.println(law.getChapters().get(0).getArticles().get(0).getParagraphs().get(0).getParagraphPoints().get(0).getPointText());
     }
 
 
@@ -130,10 +129,13 @@ public class LawProcessor {
                 ArrayList<Paragraph> paragraphs = new ArrayList<>();
 
                 int paragraphCounter = 1;
-                for (String paragraphText : paragraphTexts) {
-                    Paragraph paragraph = new Paragraph.Builder(paragraphCounter++, paragraphText).build();
+                ArrayList<Point> paragraphPoints;
+                for(String paragraphText: paragraphTexts){
+                    paragraphPoints = PointSplitter.splitIntoPoints(paragraphText);
+                    Paragraph paragraph = new Paragraph.Builder(paragraphCounter++, paragraphPoints).build();
                     paragraphs.add(paragraph);
                 }
+
                 Article article = new Article.Builder(articleCounter++, paragraphs).build();
                 articles.add(article);
             }

@@ -3,6 +3,8 @@ package org.uoi.legislativetextparser.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+
 /**
  * Represents a paragraph object that contains the paragraph number and text.
  */
@@ -13,12 +15,12 @@ public class Paragraph {
     private int paragraphNumber;
 
     @JsonProperty("text")
-    private String paragraphText;
+    private ArrayList<Point> paragraphPoints;
 
 
     public Paragraph(Builder builder) {
         this.paragraphNumber = builder.paragraphNumber;
-        this.paragraphText = builder.paragraphText;
+        this.paragraphPoints = builder.paragraphPoints;
     }
 
     public int getParagraphNumber() {
@@ -30,22 +32,22 @@ public class Paragraph {
     }
 
 
-    public String getParagraphText() {
-        return paragraphText;
+    public ArrayList<Point> getParagraphPoints() {
+        return paragraphPoints;
     }
 
-    public void setParagraphText(String paragraphText) {
-        this.paragraphText = paragraphText;
+    public void setParagraphPoints(ArrayList<Point> paragraphPoints) {
+        this.paragraphPoints = paragraphPoints;
     }
 
     public static class Builder {
 
         private int paragraphNumber;
-        private String paragraphText;
+        private ArrayList<Point> paragraphPoints;
 
-        public Builder(int paragraphNumber, String paragraphText) {
+        public Builder(int paragraphNumber, ArrayList<Point> paragraphPoints) {
             this.paragraphNumber = paragraphNumber;
-            this.paragraphText = paragraphText;
+            this.paragraphPoints = paragraphPoints;
         }
 
         public Builder paragraphNumber(int paragraphNumber) {
@@ -53,8 +55,8 @@ public class Paragraph {
             return this;
         }
 
-        public Builder paragraphText(String paragraphText) {
-            this.paragraphText = paragraphText;
+        public Builder paragraphPoints(ArrayList<Point> paragraphPoints) {
+            this.paragraphPoints = paragraphPoints;
             return this;
         }
 

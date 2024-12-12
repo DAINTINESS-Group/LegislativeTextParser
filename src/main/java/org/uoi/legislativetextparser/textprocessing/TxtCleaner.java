@@ -1,6 +1,5 @@
 package org.uoi.legislativetextparser.textprocessing;
 
-import lombok.SneakyThrows;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -86,8 +85,8 @@ public class TxtCleaner {
      * @return the preprocessed text
      */
     public String preprocessText(String rawText) {
-        return rawText.replace("`", "").replace("▌", "")
-                .replaceAll("[ \\t]+", " ").trim();
+        return rawText.replace("`", "").replace("▌", "");
+                //.replaceAll("[ \\t]+", " ").trim();
     }
 
 
