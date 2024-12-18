@@ -1,7 +1,5 @@
 package org.uoi.legislativetextparser.textprocessing;
 
-import lombok.SneakyThrows;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

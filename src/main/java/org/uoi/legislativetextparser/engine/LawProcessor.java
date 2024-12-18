@@ -15,7 +15,7 @@ import java.util.List;
 public class LawProcessor {
 
     // Define the path to the legislative document for processing, the output directory for chapters, and the logger instance.
-    //private static final String lawPath = "src/main/resources/input/Data_Act.pdf";
+    // private static final String lawPath = "src/main/resources/input/Data_Act.pdf";
     private static final String lawPath = "src/main/resources/input/AI_Law.pdf";
     private static final String CHAPTERS_DIR = "src/main/resources/output/chapters/";
     private static final Logger log = LoggerFactory.getLogger(LawProcessor.class);
@@ -88,7 +88,7 @@ public class LawProcessor {
         log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
         log.info("Exiting...");
 
-        System.out.println(law.getChapters().get(0).getArticles().get(0).getParagraphs().get(0).getParagraphPoints().get(0).getPointText());
+        // System.out.println(law.getChapters().get(0).getArticles().get(0).getParagraphs().get(0).getParagraphPoints().get(0).getPointText());
     }
 
 

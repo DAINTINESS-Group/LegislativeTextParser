@@ -16,59 +16,55 @@ public class PointSplitter {
      */
     public static ArrayList<Point> splitIntoPoints(String paragraph) {
         ArrayList<Point> points = new ArrayList<>();
-
-        // Reset the point counter to 1 for each paragraph
         int pointCounter = 1;
 
         // Regex for top-level points (e.g., (a), (b), etc.)
-        Pattern topLevelPattern = Pattern.compile("(?<=\\n)\\([a-z]\\)\\s");
+        Pattern topLevelPattern = Pattern.compile("(?<=\\n)\\([a-u]\\)\\s");
         Matcher topLevelMatcher = topLevelPattern.matcher(paragraph);
 
         int start = 0;
-        boolean hasDepth = false;
         while (topLevelMatcher.find()) {
             int end = topLevelMatcher.start();
-
-            // Extract text for the current top-level point
             String pointText = paragraph.substring(start, end).trim();
+
             if (!pointText.isEmpty()) {
-                // Reset the counter for subpoints
-                int innerPointCounter = 1;
+                // Extract subpoints for the current top-level point
+                ArrayList<Point> subPoints = extractSubPoints(paragraph.substring(start, end));
 
-                // Extract subpoints (e.g., (i), (ii)) for this top-level point
-                ArrayList<Point> subPoints = extractSubPoints(pointText, innerPointCounter);
+                // Append only subpoints' text (not parent text) to parent point text
+                StringBuilder fullText = new StringBuilder(pointText);
+                for (Point subPoint : subPoints) {
+                    fullText.append("\n").append(subPoint.getPointText());
+                }
 
-                hasDepth = subPoints.size() > 1;
-
-                // Add the top-level point with subpoints directly nested
-                points.add( hasDepth ? new Point.Builder(pointCounter++, pointText)
+                // Create the top-level point with the combined text and its subpoints
+                points.add(new Point.Builder(pointCounter++, fullText.toString())
                         .innerPoints(subPoints)
-                        .build()
-                        : new Point.Builder(pointCounter++, pointText)
                         .build());
             }
 
             start = end;
         }
 
-        // Handle remaining text as the last point
-        String remainingText = paragraph.substring(start).trim();
-        if (!remainingText.isEmpty()) {
-            points.add(new Point.Builder(pointCounter++, remainingText).build());
+        // Handle the last portion of the paragraph (if any)
+        if (start < paragraph.length()) {
+            String remainingText = paragraph.substring(start).trim();
+            if (!remainingText.isEmpty()) {
+                points.add(new Point.Builder(pointCounter++, remainingText).build());
+            }
         }
 
         return points;
     }
 
+
+
     /**
-     * Extracts subpoints (e.g., (i), (ii), etc.) from the given text and ensures they are nested under their parent.
-     *
-     * @param text The text to extract subpoints from.
-     * @param innerPointCounter The counter for numbering the subpoints.
-     * @return A list of Point objects for the subpoints.
+     * Extracts subpoints (e.g., (i), (ii), etc.) from the given text.
      */
-    private static ArrayList<Point> extractSubPoints(String text, int innerPointCounter) {
+    private static ArrayList<Point> extractSubPoints(String text) {
         ArrayList<Point> subPoints = new ArrayList<>();
+        int subPointCounter = 1;
 
         // Regex for subpoints (e.g., (i), (ii), etc.)
         Pattern subPointPattern = Pattern.compile("(?<=\\n)\\(([ivxlc]+)\\)\\s");
@@ -77,22 +73,27 @@ public class PointSplitter {
         int start = 0;
         while (subPointMatcher.find()) {
             int end = subPointMatcher.start();
-
-            // Extract text for the current subpoint
             String subPointText = text.substring(start, end).trim();
-            if (!subPointText.isEmpty()) {
-                subPoints.add(new Point.Builder(innerPointCounter++, subPointText).build());
+
+            // Avoid treating the parent point as its own subpoint
+            if (!subPointText.equals(text.trim()) && !subPointText.isEmpty()) {
+                subPoints.add(new Point.Builder(subPointCounter++, subPointText).build());
             }
 
             start = end;
         }
 
-        // Handle remaining text as the last subpoint
-        String remainingText = text.substring(start).trim();
-        if (!remainingText.isEmpty()) {
-            subPoints.add(new Point.Builder(innerPointCounter++, remainingText).build());
+        // Handle remaining text after the last match
+        if (start < text.length()) {
+            String remainingText = text.substring(start).trim();
+            if (!remainingText.isEmpty() && !remainingText.equals(text.trim())) {
+                subPoints.add(new Point.Builder(subPointCounter++, remainingText).build());
+            }
         }
 
         return subPoints;
     }
+
+
+
 }

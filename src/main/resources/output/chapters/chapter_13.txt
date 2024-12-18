@@ -152,7 +152,7 @@ AI systems already placed on the market or put into service
 legal acts listed in Annex X that have been placed on the market or put into service before 
 … [36 months from the date of entry into force of this Regulation] shall be brought into 
 compliance with this Regulation by 31 December 2030.
-The requirements laid down in this Regulation shall be taken into account in the 
+The requirements laid down in this Regulation shall be taken into account  in the 
 evaluation of each large-scale IT system established by the legal acts listed in Annex X to 
 be undertaken as provided for in those legal acts and where those legal acts are replaced 
 or amended.
@@ -260,7 +260,7 @@ However:
 
 (a) Chapters I and II shall apply from … [six months from the date of entry into force 
 of this Regulation];
-(b) Chapter III Section 4, Chapter V, Chapter VII and Chapter XII shall apply from 
+(b) Chapter III  Section 4, Chapter V, Chapter VII and Chapter XII shall apply from 
 … [12 months from the date of entry into force of this Regulation], with the 
 exception of Article 101;
 (c) Article 6(1) and the corresponding obligations in this Regulation shall apply from 

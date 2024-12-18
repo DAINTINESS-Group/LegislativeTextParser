@@ -16,7 +16,7 @@ their age, disability or a specific social or economic situation, with the objec
 the effect, of materially distorting the behaviour of that person or a person 
 belonging to that group in a manner that causes or is reasonably likely to cause that 
 person or another person significant harm;
-(c) the placing on the market, the putting into service or the use of AI systems for the 
+(c) the placing on the market, the putting into service or the use of AI systems  for the 
 purpose of the evaluation or classification of natural persons or groups of persons 
 over a certain period of time based on their social behaviour or known, inferred or 
 predicted personal or personality characteristics, with the social score leading to 
@@ -24,7 +24,7 @@ either or both of the following:
 (i) detrimental or unfavourable treatment of certain natural persons or whole 
 groups of persons in social contexts that are unrelated to the contexts in which 
 the data was originally generated or collected;
-(ii) detrimental or unfavourable treatment of certain natural persons or groups of 
+(ii) detrimental or unfavourable treatment of certain natural persons or  groups of 
 persons that is unjustified or disproportionate to their social behaviour or its 
 gravity;
 (d) the placing on the market, the putting into service for this specific purpose, or the 
@@ -50,15 +50,15 @@ orientation; this prohibition does not cover any labelling or filtering of lawfu
 acquired biometric datasets, such as images, based on biometric data or 
 categorizing of biometric data in the area of law enforcement;
 (h) the use of ‘real-time’ remote biometric identification systems in publicly accessible 
-spaces for the purposes of law enforcement, unless and in so far as such use is 
+spaces for the purposes of law enforcement,  unless and in so far as such use is 
 strictly necessary for one of the following objectives:
-(i) the targeted search for specific victims of abduction, trafficking in human 
+(i) the targeted search for specific  victims of abduction, trafficking in human 
 beings or sexual exploitation of human beings, as well as searching for 
 missing persons;
 (ii) the prevention of a specific, substantial and imminent threat to the life or 
 physical safety of natural persons or a genuine and present or genuine and 
 foreseeable threat of a terrorist attack;
-(iii) the localisation or identification of a person suspected of having committed 
+(iii) the  localisation or identification of a person suspected of having committed 
 a criminal offence, for the purpose of conducting a criminal investigation, 
 prosecution or executing a criminal penalty for offences referred to in Annex 
 II and punishable in the Member State concerned by a custodial sentence or a 
@@ -87,7 +87,7 @@ registered the system in the EU database according to Article 49. However, in du
 justified cases of urgency, the use of such systems may be commenced without the 
 registration in the EU database, provided that such registration is completed without 
 undue delay.
-3. For the purposes of paragraph 1, point (h) and paragraph 2, each use for the purposes of 
+3. For the purposes of paragraph 1, point (h) and paragraph 2, each  use for the purposes of 
 law enforcement of a ‘real-time’ remote biometric identification system in publicly 
 accessible spaces shall be subject to a prior authorisation granted by a judicial authority or 
  an independent administrative authority whose decision is binding of the Member State 
@@ -117,7 +117,7 @@ and shall not include sensitive operational data.
 5. A Member State may decide to provide for the possibility to fully or partially authorise the 
 use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for 
 the purposes of law enforcement within the limits and under the conditions listed in 
-paragraph 1, point (h), and paragraphs 2 and 3. Member States concerned shall lay 
+paragraph 1, point (h), and paragraphs 2 and 3.  Member States concerned shall lay 
 down in their national law the necessary detailed rules for the request, issuance and 
 exercise of, as well as supervision and reporting relating to, the authorisations referred to 
 in paragraph 3. Those rules shall also specify in respect of which of the objectives listed in 

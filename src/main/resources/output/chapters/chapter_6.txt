@@ -95,8 +95,8 @@ fines shall be imposed regarding that law.
 13. The AI regulatory sandboxes shall be designed and implemented in such a way that, 
 where relevant, they facilitate cross-border cooperation between national competent 
 authorities.
-14. National competent authorities shall coordinate their activities and cooperate within the 
-framework of the Board. 
+14. National competent authorities  shall coordinate their activities and cooperate within the 
+framework of the  Board. 
 15. National competent authorities shall inform the AI Office and the Board of the 
 establishment of a sandbox, and may ask it for support and guidance. The AI Office 
 shall make publicly available a list of planned and existing AI sandboxes and keep it up 
@@ -187,9 +187,9 @@ Article 59
 Further processing of personal data for developing certain AI systems
  in the public interest in the AI regulatory sandbox
 1. , Personal data lawfully collected for other purposes may be processed in an AI regulatory 
-sandbox solely for the purpose of developing, training and testing certain AI systems in 
+sandbox solely for the purpose of developing, training and testing certain  AI systems in 
 the sandbox when all of the following conditions are met:
-(a) AI systems shall be developed for safeguarding substantial public interest by a 
+(a)  AI systems shall be developed for safeguarding substantial public interest by a 
 public authority or another natural or legal person and in one or more of the 
 following areas:
 (i) public safety and public health, including disease detection, diagnosis 
@@ -364,7 +364,7 @@ obtained.
 2. The informed consent shall be dated and documented and a copy shall be given to the 
 subjects of testing or their legal representative.
 Article 62
-Measures for providers and deployers, in particular SMEs, including start-ups
+Measures for  providers and deployers, in particular SMEs, including start-ups
 1. Member States shall undertake the following actions:
 (a) provide SMEs, including start-ups, having a registered office or a branch in the 
 Union, with priority access to the AI regulatory sandboxes, to the extent that they 
