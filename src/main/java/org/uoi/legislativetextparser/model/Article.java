@@ -13,6 +13,9 @@ public class Article {
     @JsonProperty("articleNumber")
     private int articleNumber;
 
+    @JsonProperty("articleID")
+    private String articleID;
+
     @JsonProperty("paragraphs")
     private ArrayList<Paragraph> paragraphs;
 
@@ -20,6 +23,7 @@ public class Article {
     public Article(Builder builder) {
         this.articleNumber = builder.articleNumber;
         this.paragraphs = builder.paragraphs;
+        this.articleID = builder.articleID;
     }
 
     public int getArticleNumber() {
@@ -38,14 +42,25 @@ public class Article {
         this.paragraphs = paragraphs;
     }
 
+    public String getArticleID() {
+        return articleID;
+    }
+
+    public void setArticleID(String articleID) {
+        this.articleID = articleID;
+    }
+
     public static class Builder {
 
         private int articleNumber;
+        private String articleID;
         private ArrayList<Paragraph> paragraphs;
 
-        public Builder(int articleNumber, ArrayList<Paragraph> paragraphs) {
+        public Builder(int articleNumber, ArrayList<Paragraph> paragraphs, String articleID) {
             this.articleNumber = articleNumber;
             this.paragraphs = paragraphs;
+            this.articleID = articleID;
+
         }
 
         public Builder articleNumber(int articleNumber) {
@@ -55,6 +70,11 @@ public class Article {
 
         public Builder paragraph(ArrayList<Paragraph> paragraph) {
             this.paragraphs = paragraph;
+            return this;
+        }
+
+        public Builder articleID(String articleID) {
+            this.articleID = articleID;
             return this;
         }
 

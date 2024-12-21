@@ -1,4 +1,4 @@
-package org.uoi.legislativetextparser.textprocessing;
+package org.uoi.legislativetextparser.entityextraction;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -8,7 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainEntityExtractor {
+/**
+ * Extracts entities from the "Definitions" articles in the JSON file.
+ */
+public class ManualEntityExtractor implements EntityExtractor {
 
     /**
      * Extracts main entities from all "Definitions" articles in the JSON file.
@@ -17,6 +20,7 @@ public class MainEntityExtractor {
      * @return List of main entities.
      * @throws Exception if file reading or JSON parsing fails.
      */
+    @Override
     public List<String> extractEntities(String jsonFilePath) throws Exception {
         List<String> entities = new ArrayList<>();
 
@@ -42,7 +46,7 @@ public class MainEntityExtractor {
 
                             for (int l = 0; l < texts.length(); l++) {
                                 String paragraphText = texts.getJSONObject(l).getString("text");
-                                String entity = extractEntityFromParagraph(paragraphText);
+                                String entity = EntityExtractor.extractEntityFromParagraph(paragraphText);
                                 if (entity != null) {
                                     entities.add(entity);
                                 }
@@ -72,22 +76,4 @@ public class MainEntityExtractor {
         return false;
     }
 
-    /**
-     * Extracts the entity from a paragraph.
-     *
-     * @param paragraph Text of the paragraph.
-     * @return The extracted entity or null if none found.
-     */
-    private static String extractEntityFromParagraph(String paragraph) {
-
-        String entityPattern = "\\(?\\d+[a-z]?\\)?\\.?\\s+‘([^’]+)’";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(entityPattern);
-        java.util.regex.Matcher matcher = pattern.matcher(paragraph);
-
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-
-        return null;
-    }
 }

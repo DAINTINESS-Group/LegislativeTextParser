@@ -47,6 +47,7 @@ public class Point {
         this.innerPoints = innerPoints;
     }
 
+
     public static class Builder {
 
         private int pointNumber;
@@ -54,7 +55,7 @@ public class Point {
 
         private ArrayList<Point> innerPoints;
 
-        public Builder(int pointNumber, String pointText, ArrayList<Point> innerPoints) {
+        public Builder(int pointNumber, String pointText, ArrayList<Point> innerPoints, String pointID) {
             this.pointNumber = pointNumber;
             this.pointText = pointText;
             this.innerPoints = innerPoints;

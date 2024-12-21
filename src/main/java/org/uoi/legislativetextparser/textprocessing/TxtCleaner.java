@@ -86,9 +86,7 @@ public class TxtCleaner {
      */
     public String preprocessText(String rawText) {
         return rawText.replace("`", "").replace("▌", "");
-                //.replaceAll("[ \\t]+", " ").trim();
     }
-
 
     /**
      * Saves the cleaned text to a file at ../resources/output/cleanedSelectedLaw.txt.

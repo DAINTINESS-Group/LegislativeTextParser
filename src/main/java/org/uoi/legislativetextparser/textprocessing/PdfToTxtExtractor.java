@@ -30,7 +30,6 @@ public class PdfToTxtExtractor {
         }
     }
 
-
     /**
      * Saves the extracted text to a file at ../resources/output/selectedLaw.txt.
      *

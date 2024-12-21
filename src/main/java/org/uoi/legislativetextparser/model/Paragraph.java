@@ -13,6 +13,9 @@ public class Paragraph {
     @JsonProperty("paragraphNumber")
     private int paragraphNumber;
 
+    @JsonProperty("paragraphID")
+    private String paragraphID;
+
     @JsonProperty("text")
     private ArrayList<Point> paragraphPoints;
 
@@ -20,6 +23,7 @@ public class Paragraph {
     public Paragraph(Builder builder) {
         this.paragraphNumber = builder.paragraphNumber;
         this.paragraphPoints = builder.paragraphPoints;
+        this.paragraphID = builder.paragraphID;
     }
 
     public int getParagraphNumber() {
@@ -39,14 +43,24 @@ public class Paragraph {
         this.paragraphPoints = paragraphPoints;
     }
 
+    public String getParagraphID() {
+        return paragraphID;
+    }
+
+    public void setParagraphID(String paragraphID) {
+        this.paragraphID = paragraphID;
+    }
+
     public static class Builder {
 
         private int paragraphNumber;
+        private String paragraphID;
         private ArrayList<Point> paragraphPoints;
 
-        public Builder(int paragraphNumber, ArrayList<Point> paragraphPoints) {
+        public Builder(int paragraphNumber, ArrayList<Point> paragraphPoints, String paragraphID) {
             this.paragraphNumber = paragraphNumber;
             this.paragraphPoints = paragraphPoints;
+            this.paragraphID = paragraphID;
         }
 
         public Builder paragraphNumber(int paragraphNumber) {
@@ -56,6 +70,11 @@ public class Paragraph {
 
         public Builder paragraphPoints(ArrayList<Point> paragraphPoints) {
             this.paragraphPoints = paragraphPoints;
+            return this;
+        }
+
+        public Builder paragraphID(String paragraphID) {
+            this.paragraphID = paragraphID;
             return this;
         }
 
