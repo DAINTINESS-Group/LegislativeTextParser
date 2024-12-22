@@ -42,7 +42,7 @@ public class TxtCleaner {
     public String filterFromSection(String text) {
         int startIndex = text.indexOf(START_MARKER);
         if (startIndex == -1) {
-            throw new IllegalArgumentException("Start marker not found in the text: " + START_MARKER);
+            throw new IllegalArgumentException("It seems like this document is not a legislative file. " + "\n" + "Please check your input!");
         }
         return text.substring(startIndex).trim();
     }

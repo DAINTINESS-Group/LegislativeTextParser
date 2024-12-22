@@ -25,14 +25,11 @@ public class PdfToTxtExtractor {
      * @calls saveToFile method to save the extracted text to a file
      * @throws IOException if there is an error reading or processing the PDF file
      */
-    public void extractTextFromPDF(File pdfFile) {
-        try (PDDocument document = Loader.loadPDF(pdfFile)) {
-            PDFTextStripper pdfStripper = new PDFTextStripper();
-            saveToFile(pdfStripper.getText(document));
-        } catch (IOException e) {
-            System.err.println("An error occurred while extracting text from the PDF: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public void extractTextFromPDF(File pdfFile) throws IOException {
+        PDDocument document = Loader.loadPDF(pdfFile);
+        PDFTextStripper pdfStripper = new PDFTextStripper();
+        saveToFile(pdfStripper.getText(document));
+        document.close();
     }
 
     /**

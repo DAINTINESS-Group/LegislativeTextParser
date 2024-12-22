@@ -19,6 +19,7 @@ public class LawProcessor {
 
     private static final String CHAPTERS_DIR = "src/main/resources/output/chapters/";
     private static final String SELECTED_LAW = "src/main/resources/output/selectedLaw.txt";
+    private static final String CLEANED_LAW = "src/main/resources/output/cleanedSelectedLaw.txt";
     private static final Logger log = LoggerFactory.getLogger(LawProcessor.class);
     private final Config config;
 
@@ -48,7 +49,7 @@ public class LawProcessor {
             return;
         }
 
-        File txtFile = new File("src/main/resources/output/selectedLaw.txt");
+        File txtFile = new File(SELECTED_LAW);
         try {
             log.info("Cleaning text from the legislative document by removing unnecessary sections and characters...");
             TxtCleaner txtCleaner = new TxtCleaner();
@@ -61,8 +62,9 @@ public class LawProcessor {
 
         try {
             log.info("Splitting the document into chapters...");
-            txtFile = new File("src/main/resources/output/cleanedSelectedLaw.txt");
-            ChapterSplitter.splitIntoChapters(Files.readString(txtFile.toPath()));
+            txtFile = new File(CLEANED_LAW);
+            ChapterSplitter chapterSplitter = new ChapterSplitter(CHAPTERS_DIR);
+            chapterSplitter.splitIntoChapters(Files.readString(txtFile.toPath()));
             log.info("Chapters saved successfully.");
         } catch (IOException e) {
             log.error("I/O Error during chapter splitting: {}", e.getMessage(), e);

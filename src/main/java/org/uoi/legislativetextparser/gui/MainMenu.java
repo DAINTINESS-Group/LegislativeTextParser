@@ -174,6 +174,10 @@ public class MainMenu {
             JOptionPane.showMessageDialog(frame, "Please specify both input and output paths.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        else if ((!inputPath.endsWith(".pdf")) || (!outputPath.endsWith(".json"))){
+            JOptionPane.showMessageDialog(frame, "Please ensure that input file is .pdf and output is .json.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         Config config = new Config(inputPath, outputPath);
 
@@ -212,7 +216,7 @@ public class MainMenu {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(frame, "An error occurred: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }

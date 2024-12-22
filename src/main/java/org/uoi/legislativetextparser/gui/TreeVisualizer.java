@@ -25,9 +25,11 @@ public class TreeVisualizer {
         JScrollPane scrollPane = new JScrollPane(tree);
         frame.add(scrollPane, BorderLayout.CENTER);
 
+        JPanel buttonPanel = new JPanel();
         JButton closeButton = new JButton("Close");
         closeButton.addActionListener(e -> frame.dispose());
-        frame.add(closeButton, BorderLayout.SOUTH);
+        buttonPanel.add(closeButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
 
         if (relativeTo != null) {
             frame.setLocationRelativeTo(relativeTo);
