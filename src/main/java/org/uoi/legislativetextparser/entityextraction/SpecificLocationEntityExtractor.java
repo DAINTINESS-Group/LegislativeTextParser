@@ -28,7 +28,6 @@ public class SpecificLocationEntityExtractor implements EntityExtractor{
         String jsonContent = Files.readString(Paths.get(jsonFilePath));
         JSONObject root = new JSONObject(jsonContent);
 
-
         JSONArray chapters = root.getJSONArray("chapters");
         for (int i = 0; i < chapters.length(); i++) {
             JSONObject chapter = chapters.getJSONObject(i);
@@ -40,29 +39,23 @@ public class SpecificLocationEntityExtractor implements EntityExtractor{
                     if (article.getInt("articleNumber") == this.articleNumber) {
 
                         JSONArray paragraphs = article.getJSONArray("paragraphs");
-                        if (paragraphs.length() > 0) {
+                        if (!paragraphs.isEmpty()) {
                             JSONObject firstParagraph = paragraphs.getJSONObject(0);
-                            JSONArray textArray = firstParagraph.getJSONArray("text");
+                            if (EntityExtractor.containsDefinitions(firstParagraph)) {
 
-                            if (textArray.length() > 0) {
-                                String firstParagraphText = textArray.getJSONObject(0).getString("text");
-                                if (firstParagraphText.startsWith("Article " + this.articleNumber + "\nDefinitions\n")) {
+                                for (int k = 1; k < paragraphs.length(); k++) {
+                                    JSONObject paragraph = paragraphs.getJSONObject(k);
+                                    JSONArray texts = paragraph.getJSONArray("text");
 
-                                    for (int k = 1; k < paragraphs.length(); k++) {
-                                        JSONObject paragraph = paragraphs.getJSONObject(k);
-                                        JSONArray texts = paragraph.getJSONArray("text");
-
-                                        for (int l = 0; l < texts.length(); l++) {
-                                            String paragraphText = texts.getJSONObject(l).getString("text");
-                                            String entity = EntityExtractor.extractEntityFromParagraph(paragraphText);
-                                            if (entity != null) {
-                                                entities.add(entity);
-                                            }
+                                    for (int l = 0; l < texts.length(); l++) {
+                                        String paragraphText = texts.getJSONObject(l).getString("text");
+                                        String entity = EntityExtractor.extractEntityFromParagraph(paragraphText);
+                                        if (entity != null) {
+                                            entities.add(entity);
                                         }
                                     }
-
-                                    return entities;
                                 }
+                                return entities;
                             }
                         }
                         throw new IllegalArgumentException("The specified article does not contain definitions.");

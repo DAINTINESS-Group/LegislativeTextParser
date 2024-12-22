@@ -36,9 +36,9 @@ public class ManualEntityExtractor implements EntityExtractor {
                 JSONObject article = articles.getJSONObject(j);
                 JSONArray paragraphs = article.getJSONArray("paragraphs");
 
-                if (paragraphs.length() > 0) {
+                if (!paragraphs.isEmpty()) {
                     JSONObject firstParagraph = paragraphs.getJSONObject(0);
-                    if (containsDefinitions(firstParagraph)) {
+                    if (EntityExtractor.containsDefinitions(firstParagraph)) {
 
                         for (int k = 1; k < paragraphs.length(); k++) {
                             JSONObject paragraph = paragraphs.getJSONObject(k);
@@ -58,22 +58,6 @@ public class ManualEntityExtractor implements EntityExtractor {
         }
 
         return entities;
-    }
-
-    /**
-     * Checks if a paragraph contains "Definitions" in its title.
-     *
-     * @param paragraph The JSON object of the paragraph.
-     * @return True if the paragraph contains "Definitions," otherwise false.
-     */
-    private static boolean containsDefinitions(JSONObject paragraph) {
-        JSONArray textArray = paragraph.getJSONArray("text");
-
-        if (textArray.length() > 0) {
-            String text = textArray.getJSONObject(0).getString("text");
-            return text.contains("Definitions");
-        }
-        return false;
     }
 
 }
