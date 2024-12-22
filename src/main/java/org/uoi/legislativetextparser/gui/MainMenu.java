@@ -14,6 +14,7 @@ import java.util.List;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 public class MainMenu {
 
@@ -160,8 +161,8 @@ public class MainMenu {
                     }
                     JOptionPane.showMessageDialog(frame, "Processing completed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     List<String> capitalizedEntities = entities.stream()
-                            .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
-                            .toList();
+                            .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1)).collect(Collectors.toList());
+//                            .toList();
 
                     EntityVisualizer entityVisualizer = new EntityVisualizer();
                     entityVisualizer.displayEntities(capitalizedEntities);
