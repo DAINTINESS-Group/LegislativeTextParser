@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 public class LawProcessor {
 
     private static final String CHAPTERS_DIR = "src/main/resources/output/chapters/";
+    private static final String SELECTED_LAW = "src/main/resources/output/selectedLaw.txt";
     private static final Logger log = LoggerFactory.getLogger(LawProcessor.class);
     private final Config config;
 
@@ -39,7 +40,8 @@ public class LawProcessor {
         try {
             // Convert PDF to text
             log.info("Extracting text from the legislative document...");
-            PdfToTxtExtractor.extractTextFromPDF(new File(config.getLawPdfPath()));
+            PdfToTxtExtractor pdfToTxtExtractor = new PdfToTxtExtractor(SELECTED_LAW);
+            pdfToTxtExtractor.extractTextFromPDF(new File(config.getLawPdfPath()));
             log.info("Text extraction completed successfully.");
         } catch (Exception e) {
             log.error("Error during PDF to text extraction: {}", e.getMessage(), e);

@@ -13,6 +13,11 @@ import java.nio.file.Files;
  */
 public class PdfToTxtExtractor {
 
+    private final String saveFilePath;
+
+    public PdfToTxtExtractor(String saveFilePath) {
+        this.saveFilePath = saveFilePath;
+    }
     /**
      * Extracts text from a PDF file.
      *
@@ -20,7 +25,7 @@ public class PdfToTxtExtractor {
      * @calls saveToFile method to save the extracted text to a file
      * @throws IOException if there is an error reading or processing the PDF file
      */
-    public static void extractTextFromPDF(File pdfFile) {
+    public void extractTextFromPDF(File pdfFile) {
         try (PDDocument document = Loader.loadPDF(pdfFile)) {
             PDFTextStripper pdfStripper = new PDFTextStripper();
             saveToFile(pdfStripper.getText(document));
@@ -35,8 +40,8 @@ public class PdfToTxtExtractor {
      *
      * @param text the extracted text from the PDF
      */
-    public static void saveToFile(String text) throws IOException {
-        File txtOutputFile = new File("src/main/resources/output/selectedLaw.txt");
+    public void saveToFile(String text) throws IOException {
+        File txtOutputFile = new File(saveFilePath);
         Files.writeString(txtOutputFile.toPath(), text);
     }
 }
