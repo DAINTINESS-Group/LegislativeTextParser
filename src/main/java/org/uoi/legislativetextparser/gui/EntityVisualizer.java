@@ -78,7 +78,7 @@ public class EntityVisualizer {
      * @param file     File to save the entities in.
      * @throws Exception If an error occurs during file writing.
      */
-    private void saveEntitiesAsJson(List<String> entities, File file) throws Exception {
+    public void saveEntitiesAsJson(List<String> entities, File file) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, entities);
     }
