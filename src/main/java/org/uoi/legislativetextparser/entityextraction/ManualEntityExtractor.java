@@ -3,61 +3,53 @@ package org.uoi.legislativetextparser.entityextraction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Extracts entities from the "Definitions" articles in the JSON file.
  */
-public class ManualEntityExtractor implements EntityExtractor {
+public class ManualEntityExtractor extends AbstractEntityExtractor  {
 
-    /**
-     * Extracts main entities from all "Definitions" articles in the JSON file.
-     *
-     * @param jsonFilePath Path to the JSON file.
-     * @return List of main entities.
-     * @throws Exception if file reading or JSON parsing fails.
-     */
     @Override
     public List<String> extractEntities(String jsonFilePath) throws Exception {
+        JSONObject root = parseJsonFile(jsonFilePath);
+        JSONArray chapters = getChapters(root);
         List<String> entities = new ArrayList<>();
 
-        String jsonContent = Files.readString(Paths.get(jsonFilePath));
-        JSONObject root = new JSONObject(jsonContent);
-
-        JSONArray chapters = root.getJSONArray("chapters");
         for (int i = 0; i < chapters.length(); i++) {
             JSONObject chapter = chapters.getJSONObject(i);
+            JSONArray articles = getArticles(chapter);
 
-            JSONArray articles = chapter.getJSONArray("articles");
             for (int j = 0; j < articles.length(); j++) {
                 JSONObject article = articles.getJSONObject(j);
-                JSONArray paragraphs = article.getJSONArray("paragraphs");
+                JSONArray paragraphs = getParagraphs(article);
 
-                if (!paragraphs.isEmpty()) {
-                    JSONObject firstParagraph = paragraphs.getJSONObject(0);
-                    if (EntityExtractor.containsDefinitions(firstParagraph)) {
-
-                        for (int k = 1; k < paragraphs.length(); k++) {
-                            JSONObject paragraph = paragraphs.getJSONObject(k);
-                            JSONArray texts = paragraph.getJSONArray("text");
-
-                            for (int l = 0; l < texts.length(); l++) {
-                                String paragraphText = texts.getJSONObject(l).getString("text");
-                                String entity = EntityExtractor.extractEntityFromParagraph(paragraphText);
-                                if (entity != null) {
-                                    entities.add(entity);
-                                }
-                            }
-                        }
-                    }
+                if (containsDefinitions(paragraphs)) {
+                    entities.addAll(extractEntitiesFromParagraphs(paragraphs));
                 }
             }
         }
-
         return entities;
     }
 
+    /**
+     * Checks if the paragraphs contain definitions.
+     *
+     * @param paragraphs JSONArray of paragraphs.
+     * @return True if definitions are found, false otherwise.
+     */
+    private boolean containsDefinitions(JSONArray paragraphs) {
+        if (paragraphs.isEmpty()) {
+            return false;
+        }
+        JSONObject firstParagraph = paragraphs.getJSONObject(0);
+        JSONArray texts = firstParagraph.getJSONArray("text");
+
+        if (!texts.isEmpty()) {
+            String firstParagraphText = texts.getJSONObject(0).getString("text");
+            return firstParagraphText.toLowerCase().contains("definitions");
+        }
+        return false;
+    }
 }
