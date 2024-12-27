@@ -1,10 +1,5 @@
 package org.uoi.legislativetextparser.engine;
 
-import org.uoi.legislativetextparser.model.*;
-import org.uoi.legislativetextparser.textprocessing.ArticleSplitter;
-import org.uoi.legislativetextparser.textprocessing.ParagraphSplitter;
-import org.uoi.legislativetextparser.textprocessing.PointSplitter;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +8,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.uoi.legislativetextparser.model.Article;
+import org.uoi.legislativetextparser.model.Chapter;
+import org.uoi.legislativetextparser.model.Law;
+import org.uoi.legislativetextparser.model.Paragraph;
+import org.uoi.legislativetextparser.model.Point;
+import org.uoi.legislativetextparser.textprocessing.ArticleSplitter;
+import org.uoi.legislativetextparser.textprocessing.ParagraphSplitter;
+import org.uoi.legislativetextparser.textprocessing.PointSplitter;
 
 public class LawConstructor {
 
@@ -69,7 +73,8 @@ public class LawConstructor {
                     paragraphs.add(paragraph);
                 }
 
-                Article article = new Article.Builder(articleCounter++, paragraphs, articleID).build();
+                String articleTitle = extractArticleTitle(articleText);
+                Article article = new Article.Builder(articleCounter++, paragraphs, articleID, articleTitle).build();
                 articles.add(article);
             }
 
@@ -95,6 +100,29 @@ public class LawConstructor {
         return "Could not extract chapter title";
     }
 
+    /**
+     * Extracts the title of an article from its text.
+     *
+     * @param article The JSON object representing the article.
+     * @return The title of the article.
+     */
+    private static String extractArticleTitle(String articleText) {
+        String[] lines = articleText.split("\\r?\\n");
+    
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].trim().matches("Article\\s+\\d+")) {
+                for (int j = i + 1; j < lines.length; j++) {
+                    String potentialTitle = lines[j].trim();
+                    if (!potentialTitle.isEmpty()) {
+                        return potentialTitle;
+                    }
+                }
+            }
+        }
+        return "Could not extract article title";
+    }
+    
+    
     /**
      * Extracts the chapter number from the file name.
      *
