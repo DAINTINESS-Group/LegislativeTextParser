@@ -10,7 +10,10 @@ import org.uoi.legislativetextparser.textprocessing.TxtCleaner;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class LawProcessor {
 
@@ -26,6 +29,7 @@ public class LawProcessor {
     public void processLegislativeDocument() {
         long startTime = System.currentTimeMillis();
         log.info("Starting legislative text processing...");
+        clearChaptersDirectory();
     
         if (!extractTextFromPDF()) return;
         if (!cleanText()) return;
@@ -35,7 +39,7 @@ public class LawProcessor {
         if (law == null) return;
     
         if (!writeLawToJSON(law)) return;
-    
+
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;
         log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
@@ -106,6 +110,21 @@ public class LawProcessor {
             return false;
         }
     }
-    
-    
+
+    private void clearChaptersDirectory() {
+        Path chaptersDir = Paths.get(Config.getChaptersDir());
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(chaptersDir)) {
+            for (Path path : stream) {
+                File file = path.toFile();
+                if (file.isFile()) {
+                    if (!file.delete()) {
+                        log.error("Failed to delete file: {}", file.getName());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.error("Error while clearing chapters directory: {}", e.getMessage(), e);
+        }
+    }
+
 }

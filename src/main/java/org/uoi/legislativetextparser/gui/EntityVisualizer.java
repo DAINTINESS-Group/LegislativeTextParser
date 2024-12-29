@@ -20,7 +20,7 @@ public class EntityVisualizer {
      *
      * @param entities List of entities to display.
      */
-    public void displayEntities(List<String> entities) {
+    public void displayEntities(List<String> entities, Component relativeTo) {
         this.frame = new JFrame("Entity Visualizer");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(400, 600);
@@ -67,7 +67,7 @@ public class EntityVisualizer {
         buttonPanel.add(closeButton);
 
         this.frame.add(buttonPanel, BorderLayout.SOUTH);
-        this.frame.setLocationRelativeTo(null);
+        this.frame.setLocationRelativeTo(frame);
         this.frame.setVisible(true);
     }
 

@@ -208,11 +208,11 @@ public class MainMenu {
                 EntityVisualizer entityVisualizer = new EntityVisualizer();
                 entityVisualizer.displayEntities(entities.stream()
                         .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()), frame);
 
-                JSONObject jsonObject = new JSONObject(Files.readString(Paths.get(outputPath)));
                 TreeVisualizer treeVisualizer = new TreeVisualizer();
-                treeVisualizer.displayTree(LawTreeBuilder.buildTree(jsonObject), entityVisualizer.getFrame());
+                JSONObject jsonObject = new JSONObject(Files.readString(Paths.get(outputPath)));
+                treeVisualizer.displayTree(LawTreeBuilder.buildTree(jsonObject), jsonObject, frame, Config.getCleanedLaw());
             }
 
         } catch (Exception e) {
