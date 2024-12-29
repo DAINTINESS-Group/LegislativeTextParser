@@ -92,7 +92,7 @@ public class LawConstructor {
      * @return the chapter title
      */
     private String extractChapterTitle(String chapterText) {
-        Pattern pattern = Pattern.compile("CHAPTER\\s+[IVXLCDM]+(?:\\r?\\n)([A-Z][A-Z\\s\\-,]*)\n");
+        Pattern pattern = Pattern.compile("CHAPTER\\s+[IVXLCDM]+(?:\\s+)?(?:\\r?\\n)([A-Z][A-Z\\s\\-,]*)\n");
         Matcher matcher = pattern.matcher(chapterText);
         if (matcher.find()) {
             return matcher.group(1);
@@ -103,14 +103,14 @@ public class LawConstructor {
     /**
      * Extracts the title of an article from its text.
      *
-     * @param article The JSON object representing the article.
+     * @param articleText The String object representing the article's text.
      * @return The title of the article.
      */
     private static String extractArticleTitle(String articleText) {
         String[] lines = articleText.split("\\r?\\n");
     
         for (int i = 0; i < lines.length; i++) {
-            if (lines[i].trim().matches("Article\\s+\\d+")) {
+            if (lines[i].trim().matches("Article\\s+\\d+[a-z]?")) {
                 for (int j = i + 1; j < lines.length; j++) {
                     String potentialTitle = lines[j].trim();
                     if (!potentialTitle.isEmpty()) {
