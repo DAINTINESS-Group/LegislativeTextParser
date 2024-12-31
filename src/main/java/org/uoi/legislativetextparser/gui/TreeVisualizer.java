@@ -1,7 +1,7 @@
 package org.uoi.legislativetextparser.gui;
 
 import org.json.JSONObject;
-import org.uoi.legislativetextparser.tree.LawTreeBuilder;
+import org.uoi.legislativetextparser.tree.LawTreeTextHandler;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -52,7 +52,7 @@ public class TreeVisualizer {
         searchButton.addActionListener(e -> searchTree(tree, searchField.getText()));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, textScrollPane);
-        splitPane.setDividerLocation(250);
+        splitPane.setDividerLocation(400);
 
         String finalFullText = fullText;
         tree.addTreeSelectionListener(e -> {
@@ -65,7 +65,8 @@ public class TreeVisualizer {
                     textArea.setCaretPosition(0);
                 }
                 else {
-                    String associatedText = fetchTextForNode(nodeText, jsonObject);
+                    LawTreeTextHandler textHandler = new LawTreeTextHandler();
+                    String associatedText = textHandler.getContentForNode(nodeText, jsonObject);
                     textArea.setText(associatedText);
                     textArea.setCaretPosition(0);
                 }
@@ -107,18 +108,4 @@ public class TreeVisualizer {
             }
         }
     }
-
-    private String fetchTextForNode(String nodeText, JSONObject jsonObject) {
-        if (nodeText.startsWith("Chapter ")) {
-            return LawTreeBuilder.getTextForChapter(nodeText, jsonObject);
-        } else if (nodeText.startsWith("Article ")) {
-            return LawTreeBuilder.getTextForArticle(nodeText, jsonObject);
-        } else if (nodeText.startsWith("Paragraph ")) {
-            return LawTreeBuilder.getTextForParagraph(nodeText, jsonObject);
-        } else if (nodeText.startsWith("Point ")) {
-            return LawTreeBuilder.getTextForPoint(nodeText, jsonObject);
-        }
-        return "No content found for the selected node.";
-    }
-
 }
