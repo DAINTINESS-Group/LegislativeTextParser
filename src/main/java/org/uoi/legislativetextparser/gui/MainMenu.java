@@ -208,7 +208,7 @@ public class MainMenu {
                 EntityVisualizer entityVisualizer = new EntityVisualizer();
                 entityVisualizer.displayEntities(entities.stream()
                         .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
-                        .collect(Collectors.toList()), frame);
+                        .collect(Collectors.toList()));
 
                 TreeVisualizer treeVisualizer = new TreeVisualizer();
                 JSONObject jsonObject = new JSONObject(Files.readString(Paths.get(outputPath)));

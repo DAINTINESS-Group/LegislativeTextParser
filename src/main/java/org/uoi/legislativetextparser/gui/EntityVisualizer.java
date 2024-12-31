@@ -20,7 +20,7 @@ public class EntityVisualizer {
      *
      * @param entities List of entities to display.
      */
-    public void displayEntities(List<String> entities, Component relativeTo) {
+    public void displayEntities(List<String> entities) {
         this.frame = new JFrame("Entity Visualizer");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setSize(400, 600);
