@@ -2,18 +2,50 @@ package org.uoi.legislativetextparser.tree;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.uoi.legislativetextparser.model.Article;
+import org.uoi.legislativetextparser.model.Chapter;
+import org.uoi.legislativetextparser.model.Law;
+import org.uoi.legislativetextparser.model.Paragraph;
+import org.uoi.legislativetextparser.model.Point;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class LawTreeBuilder {
 
-    public static DefaultMutableTreeNode buildTree(JSONObject json) {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Law");
-    
-        if (json.has("chapters")) {
-            JSONArray chapters = json.getJSONArray("chapters");
-            addChaptersToTree(chapters, root);
+//    public static DefaultMutableTreeNode buildTree(JSONObject json) {
+//        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Law");
+//
+//        if (json.has("chapters")) {
+//            JSONArray chapters = json.getJSONArray("chapters");
+//            addChaptersToTree(chapters, root);
+//        }
+//
+//        return root;
+//    }
+
+    public static DefaultMutableTreeNode buildTree(Law law) {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(law);
+
+        for (Chapter chapter : law.getChapters()) {
+            DefaultMutableTreeNode chapterNode = new DefaultMutableTreeNode(chapter);
+            root.add(chapterNode);
+
+            for (Article article : chapter.getChildren()) {
+                DefaultMutableTreeNode articleNode = new DefaultMutableTreeNode(article);
+                chapterNode.add(articleNode);
+
+                for (Paragraph paragraph : article.getChildren()) {
+                    DefaultMutableTreeNode paragraphNode = new DefaultMutableTreeNode(paragraph);
+                    articleNode.add(paragraphNode);
+
+                    for (Point point : paragraph.getChildren()) {
+                        DefaultMutableTreeNode pointNode = new DefaultMutableTreeNode(point);
+                        paragraphNode.add(pointNode);
+                    }
+                }
+            }
         }
-    
+
         return root;
     }
     
@@ -111,3 +143,5 @@ public class LawTreeBuilder {
         return titleCase.toString().trim();
     }
 }
+
+// TODO This class needs some cleaning since introducing the new functionality with Node interface.

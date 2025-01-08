@@ -1,14 +1,16 @@
 package org.uoi.legislativetextparser.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a chapter of a legislative document which consists of a list of Articles.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Chapter {
+public class Chapter implements Node  {
 
     @JsonProperty("chapterNumber")
     private int chapterNumber;
@@ -48,6 +50,33 @@ public class Chapter {
 
     public void setArticles(ArrayList<Article> articles) {
         this.articles = articles;
+    }
+
+    @Override
+    public String toString() {
+        return "Chapter " + chapterNumber + ": " + chapterTitle;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getText() {
+        StringBuilder text = new StringBuilder(chapterTitle + "\n\n");
+        for (Article article : articles) {
+            text.append(article.getText()).append("\n");
+        }
+        return text.toString().trim();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getTitle() {
+        return chapterTitle;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Article> getChildren() {
+        return articles;
     }
 
     public static class Builder {

@@ -83,3 +83,5 @@ public class EntityVisualizer {
         mapper.writerWithDefaultPrettyPrinter().writeValue(file, entities);
     }
 }
+
+// TODO Split the window and add functionality to display the definition of each entity upon selection. Also have entity as a model class with name and definition fields.

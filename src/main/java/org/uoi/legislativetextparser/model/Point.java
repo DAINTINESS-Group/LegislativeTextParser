@@ -1,11 +1,12 @@
 package org.uoi.legislativetextparser.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Point {
+public class Point implements Node {
 
     @JsonProperty("pointNumber")
     private int pointNumber;
@@ -47,6 +48,39 @@ public class Point {
         this.innerPoints = innerPoints;
     }
 
+    @Override
+    public String toString() {
+        return "Point: " + pointNumber;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getText() {
+        return innerPoints != null ? getInnerPointsText() : pointText.trim();
+
+    }
+
+    private String getInnerPointsText() {
+        StringBuilder text = new StringBuilder();
+        for (Point point : innerPoints) {
+            text.append(point.getText()).append("\n");
+        }
+        text.append("\n").append(pointText);
+        return text.toString().trim();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getTitle() {
+        return String.valueOf(pointNumber);
+    }
+
+    @JsonIgnore
+    @Override
+    public ArrayList<Point> getChildren() {
+        return innerPoints;
+    }
+
 
     public static class Builder {
 
@@ -55,7 +89,7 @@ public class Point {
 
         private ArrayList<Point> innerPoints;
 
-        public Builder(int pointNumber, String pointText, ArrayList<Point> innerPoints, String pointID) {
+        public Builder(int pointNumber, String pointText, ArrayList<Point> innerPoints) {
             this.pointNumber = pointNumber;
             this.pointText = pointText;
             this.innerPoints = innerPoints;

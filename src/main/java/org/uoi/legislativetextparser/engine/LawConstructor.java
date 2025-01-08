@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.uoi.legislativetextparser.config.Config;
 import org.uoi.legislativetextparser.model.Article;
 import org.uoi.legislativetextparser.model.Chapter;
 import org.uoi.legislativetextparser.model.Law;
@@ -22,8 +23,8 @@ public class LawConstructor {
 
     private final String chaptersDir;
 
-    public LawConstructor(String chaptersDir) {
-        this.chaptersDir = chaptersDir;
+    public LawConstructor() {
+        this.chaptersDir = Config.getChaptersDir();
     }
 
     /**
