@@ -1,19 +1,17 @@
 package org.uoi.legislativetextparser.gui;
 
-import org.json.JSONObject;
 import org.uoi.legislativetextparser.config.Config;
 import org.uoi.legislativetextparser.engine.LawProcessor;
 import org.uoi.legislativetextparser.entityextraction.EntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.ManualEntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.SpecificLocationEntityExtractor;
+import org.uoi.legislativetextparser.model.Law;
 import org.uoi.legislativetextparser.tree.LawTreeBuilder;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public class MainMenu {
@@ -174,16 +172,16 @@ public class MainMenu {
             JOptionPane.showMessageDialog(frame, "Please specify both input and output paths.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        else if ((!inputPath.endsWith(".pdf")) || (!outputPath.endsWith(".json"))){
-            JOptionPane.showMessageDialog(frame, "Please ensure that input file is .pdf and output is .json.", "Error", JOptionPane.ERROR_MESSAGE);
+
+        if (!inputPath.endsWith(".pdf") || !outputPath.endsWith(".json")) {
+            JOptionPane.showMessageDialog(frame, "Input file must be a PDF and output file must be JSON.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Config config = new Config(inputPath, outputPath);
-
         try {
+            Config config = new Config(inputPath, outputPath);
             LawProcessor lawProcessor = new LawProcessor(config);
-            lawProcessor.processLegislativeDocument();
+            Law extractedLaw = lawProcessor.processLegislativeDocument();
 
             EntityExtractor extractor = definitionCheckbox.isSelected()
                     ? new SpecificLocationEntityExtractor(Integer.parseInt(chapterField.getText()), Integer.parseInt(articleField.getText()))
@@ -198,8 +196,8 @@ public class MainMenu {
 
             int response = JOptionPane.showConfirmDialog(
                     frame,
-                    "Processing completed successfully",
-                    "",
+                    "Processing completed successfully!",
+                    "Confirmation",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.INFORMATION_MESSAGE
             );
@@ -211,8 +209,7 @@ public class MainMenu {
                         .collect(Collectors.toList()));
 
                 TreeVisualizer treeVisualizer = new TreeVisualizer();
-                JSONObject jsonObject = new JSONObject(Files.readString(Paths.get(outputPath)));
-                treeVisualizer.displayTree(LawTreeBuilder.buildTree(jsonObject), jsonObject, frame, Config.getCleanedLaw());
+                treeVisualizer.displayTree(LawTreeBuilder.buildTree(extractedLaw), frame);
             }
 
         } catch (Exception e) {
@@ -221,3 +218,5 @@ public class MainMenu {
         }
     }
 }
+
+// TODO Update testing for entire application

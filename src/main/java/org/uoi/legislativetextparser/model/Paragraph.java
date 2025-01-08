@@ -1,5 +1,6 @@
 package org.uoi.legislativetextparser.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Represents a paragraph object that contains the paragraph number and text.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Paragraph {
+public class Paragraph implements Node {
 
     @JsonProperty("paragraphNumber")
     private int paragraphNumber;
@@ -50,6 +51,34 @@ public class Paragraph {
     public void setParagraphID(String paragraphID) {
         this.paragraphID = paragraphID;
     }
+
+    @Override
+    public String toString() {
+        return "Paragraph: " + paragraphID;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getText() {
+        StringBuilder text = new StringBuilder();
+        for (Point point : paragraphPoints) {
+            text.append(point.getText()).append("\n");
+        }
+        return text.toString().trim();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getTitle() {
+        return paragraphID;
+    }
+
+    @JsonIgnore
+    @Override
+    public ArrayList<Point> getChildren() {
+        return paragraphPoints;
+    }
+
 
     public static class Builder {
 

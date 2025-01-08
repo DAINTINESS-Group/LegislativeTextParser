@@ -1,5 +1,6 @@
 package org.uoi.legislativetextparser.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Represents an article of a legislative document which consists of a list of paragraphs.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Article {
+public class Article implements Node {
 
     @JsonProperty("articleNumber")
     private int articleNumber;
@@ -60,6 +61,33 @@ public class Article {
 
     public void setArticleTitle(String articleTitle) {
         this.articleTitle = articleTitle;
+    }
+
+    @Override
+    public String toString() {
+        return "Article " + articleID + ": " + articleTitle;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getText() {
+        StringBuilder text = new StringBuilder(articleTitle + "\n\n");
+        for (Paragraph paragraph : paragraphs) {
+            text.append(paragraph.getText()).append("\n");
+        }
+        return text.toString().trim();
+    }
+
+    @JsonIgnore
+    @Override
+    public String getTitle() {
+        return articleTitle;
+    }
+
+    @JsonIgnore
+    @Override
+    public ArrayList<Paragraph> getChildren() {
+        return paragraphs;
     }
 
     public static class Builder {

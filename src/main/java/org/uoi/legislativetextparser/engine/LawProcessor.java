@@ -23,26 +23,27 @@ public class LawProcessor {
 
     public LawProcessor(Config config) {
         this.config = config;
-        this.lawConstructor = new LawConstructor(Config.getChaptersDir());
+        this.lawConstructor = new LawConstructor();
     }
 
-    public void processLegislativeDocument() {
+    public Law processLegislativeDocument() {
         long startTime = System.currentTimeMillis();
         log.info("Starting legislative text processing...");
         clearChaptersDirectory();
     
-        if (!extractTextFromPDF()) return;
-        if (!cleanText()) return;
-        if (!splitIntoChapters()) return;
+        if (!extractTextFromPDF()) return null;
+        if (!cleanText()) return null;
+        if (!splitIntoChapters()) return null;
     
         Law law = buildLawObject();
-        if (law == null) return;
+        if (law == null) return null;
     
-        if (!writeLawToJSON(law)) return;
+        if (!writeLawToJSON(law)) return null;
 
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;
         log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
+        return law;
     }
 
     private boolean extractTextFromPDF() {
@@ -102,7 +103,7 @@ public class LawProcessor {
     private boolean writeLawToJSON(Law law) {
         try {
             log.info("Writing the law object to JSON file...");
-            Files.writeString(new File(config.getLawJsonPath()).toPath(), law.toString());
+            Files.writeString(new File(config.getLawJsonPath()).toPath(), law.toJsonString());
             log.info("Law object written successfully.");
             return true;
         } catch (IOException e) {
