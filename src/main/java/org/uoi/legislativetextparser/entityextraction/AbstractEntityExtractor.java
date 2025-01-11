@@ -1,14 +1,25 @@
 package org.uoi.legislativetextparser.entityextraction;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.uoi.legislativetextparser.model.Entity;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractEntityExtractor implements EntityExtractor{
+
+    /**
+     * Abstract method to extract entities, implemented by subclasses.
+     *
+     * @param jsonFilePath Path to the JSON file.
+     * @return List of extracted entities.
+     * @throws Exception if extraction fails.
+     */
+    @Override
+    public abstract List<Entity> extractEntities(String jsonFilePath) throws Exception;
 
     /**
      * Reads and parses the JSON file.
@@ -52,54 +63,56 @@ public abstract class AbstractEntityExtractor implements EntityExtractor{
         return article.getJSONArray("paragraphs");
     }
 
+
     /**
      * Extracts an entity from a paragraph based on a regex pattern.
      *
      * @param paragraph The paragraph text.
      * @return Extracted entity or null if no match is found.
      */
-    protected String extractEntityFromParagraph(String paragraph) {
-        String entityPattern = "\\(?\\d+[a-z]?\\)?\\.?\\s+‘([^’]+)’";
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(entityPattern);
-        java.util.regex.Matcher matcher = pattern.matcher(paragraph);
-
-        if (matcher.find()) {
-            return matcher.group(1);
+    protected Entity extractEntityFromParagraph(String paragraph) {
+        String name = extractNameFromParagraph(paragraph);
+        String definition = extractDefinitionFromParagraph(paragraph);
+        if (name != null && definition != null) {
+            String fullDefinition = name + " means " + definition;
+            return new Entity.Builder(name, fullDefinition).build();
         }
         return null;
     }
 
     /**
-     * Extracts entities from the given paragraphs.
+     * Extracts the name from an entity in a Paragraph.
      *
-     * @param paragraphs JSONArray of paragraphs.
-     * @return List of extracted entities.
+     * @param paragraph The paragraph text.
+     * @return Extracted name or null if no match is found.
      */
-    protected List<String> extractEntitiesFromParagraphs(JSONArray paragraphs) {
-        List<String> entities = new ArrayList<>();
+    private String extractNameFromParagraph(String paragraph) {
+        String entityPattern = "\\(?\\d+[a-z]?\\)?\\.?\\s+‘([^’]+)’";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(entityPattern);
+        java.util.regex.Matcher matcher = pattern.matcher(paragraph);
 
-        for (int i = 0; i < paragraphs.length(); i++) {
-            JSONObject paragraph = paragraphs.getJSONObject(i);
-            JSONArray texts = paragraph.getJSONArray("text");
-
-            for (int j = 0; j < texts.length(); j++) {
-                String paragraphText = texts.getJSONObject(j).getString("text");
-                String entity = extractEntityFromParagraph(paragraphText);
-                if (entity != null) {
-                    entities.add(entity);
-                }
-            }
+        if (matcher.find()) {
+            return StringUtils.capitalize(matcher.group(1));
         }
-        return entities;
+        return null;
     }
 
     /**
-     * Abstract method to extract entities, implemented by subclasses.
+     * Extracts the definition from an entity in a Paragraph.
      *
-     * @param jsonFilePath Path to the JSON file.
-     * @return List of extracted entities.
-     * @throws Exception if extraction fails.
+     * @param paragraph The paragraph text.
+     * @return Extracted definition or null if no match is found.
      */
-    @Override
-    public abstract List<String> extractEntities(String jsonFilePath) throws Exception;
+    private String extractDefinitionFromParagraph(String paragraph) {
+        String definitionPattern = "means\\s+([^;]+);";
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(definitionPattern);
+        java.util.regex.Matcher matcher = pattern.matcher(paragraph);
+
+        if (matcher.find()) {
+            return matcher.group(1).replace("\n", " ");
+        }
+        return null;
+    }
+
+
 }

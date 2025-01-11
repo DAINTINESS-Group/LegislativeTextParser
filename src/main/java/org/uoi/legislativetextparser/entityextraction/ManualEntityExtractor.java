@@ -2,6 +2,7 @@ package org.uoi.legislativetextparser.entityextraction;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.uoi.legislativetextparser.model.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +13,10 @@ import java.util.List;
 public class ManualEntityExtractor extends AbstractEntityExtractor  {
 
     @Override
-    public List<String> extractEntities(String jsonFilePath) throws Exception {
+    public List<Entity> extractEntities(String jsonFilePath) throws Exception {
         JSONObject root = parseJsonFile(jsonFilePath);
         JSONArray chapters = getChapters(root);
-        List<String> entities = new ArrayList<>();
+        List<Entity> entities = new ArrayList<>();
 
         for (int i = 0; i < chapters.length(); i++) {
             JSONObject chapter = chapters.getJSONObject(i);
@@ -26,12 +27,19 @@ public class ManualEntityExtractor extends AbstractEntityExtractor  {
                 JSONArray paragraphs = getParagraphs(article);
 
                 if (containsDefinitions(paragraphs)) {
-                    entities.addAll(extractEntitiesFromParagraphs(paragraphs));
+                    for (int k = 0; k < paragraphs.length(); k++) {
+                        String paragraphText = paragraphs.getJSONObject(k).getJSONArray("text").getJSONObject(0).getString("text");
+                        Entity entity = extractEntityFromParagraph(paragraphText);
+                        if (entity != null) {
+                            entities.add(entity);
+                        }
+                    }
                 }
             }
         }
         return entities;
     }
+
 
     /**
      * Checks if the paragraphs contain definitions.

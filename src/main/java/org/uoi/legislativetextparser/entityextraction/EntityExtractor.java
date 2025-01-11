@@ -1,5 +1,7 @@
 package org.uoi.legislativetextparser.entityextraction;
 
+import org.uoi.legislativetextparser.model.Entity;
+
 import java.util.List;
 
 public interface EntityExtractor {
@@ -10,6 +12,6 @@ public interface EntityExtractor {
     * @return List of extracted entities.
     * @throws Exception if JSON parsing fails or a problem occurs at entity extraction.
     */
-    List<String> extractEntities(String jsonFilePath) throws Exception;
+    List<Entity> extractEntities(String jsonFilePath) throws Exception;
 
 }

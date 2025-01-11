@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.uoi.legislativetextparser.config.Config;
 import org.uoi.legislativetextparser.model.Article;
 import org.uoi.legislativetextparser.model.Chapter;
@@ -96,7 +97,7 @@ public class LawConstructor {
         Pattern pattern = Pattern.compile("CHAPTER\\s+[IVXLCDM]+(?:\\s+)?(?:\\r?\\n)([A-Z][A-Z\\s\\-,]*)\n");
         Matcher matcher = pattern.matcher(chapterText);
         if (matcher.find()) {
-            return matcher.group(1);
+            return StringUtils.capitalize(matcher.group(1).toLowerCase());
         }
         return "Could not extract chapter title";
     }
@@ -115,7 +116,7 @@ public class LawConstructor {
                 for (int j = i + 1; j < lines.length; j++) {
                     String potentialTitle = lines[j].trim();
                     if (!potentialTitle.isEmpty()) {
-                        return potentialTitle;
+                        return StringUtils.capitalize(potentialTitle.toLowerCase());
                     }
                 }
             }

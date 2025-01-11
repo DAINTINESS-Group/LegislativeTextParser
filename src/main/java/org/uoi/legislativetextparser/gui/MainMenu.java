@@ -5,6 +5,7 @@ import org.uoi.legislativetextparser.engine.LawProcessor;
 import org.uoi.legislativetextparser.entityextraction.EntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.ManualEntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.SpecificLocationEntityExtractor;
+import org.uoi.legislativetextparser.model.Entity;
 import org.uoi.legislativetextparser.model.Law;
 import org.uoi.legislativetextparser.tree.LawTreeBuilder;
 
@@ -12,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.io.File;
-import java.util.stream.Collectors;
 
 public class MainMenu {
 
@@ -187,7 +187,7 @@ public class MainMenu {
                     ? new SpecificLocationEntityExtractor(Integer.parseInt(chapterField.getText()), Integer.parseInt(articleField.getText()))
                     : new ManualEntityExtractor();
 
-            List<String> entities = extractor.extractEntities(outputPath);
+            List<Entity> entities = extractor.extractEntities(outputPath);
 
             if (entities.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "No entities found.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -204,12 +204,12 @@ public class MainMenu {
 
             if (response == JOptionPane.OK_OPTION) {
                 EntityVisualizer entityVisualizer = new EntityVisualizer();
-                entityVisualizer.displayEntities(entities.stream()
-                        .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
-                        .collect(Collectors.toList()));
+                entityVisualizer.displayEntities(entities);
 
                 TreeVisualizer treeVisualizer = new TreeVisualizer();
                 treeVisualizer.displayTree(LawTreeBuilder.buildTree(extractedLaw), frame);
+
+                positionWindows(entityVisualizer.getFrame(), treeVisualizer.getFrame());
             }
 
         } catch (Exception e) {
@@ -217,6 +217,19 @@ public class MainMenu {
             e.printStackTrace();
         }
     }
-}
 
-// TODO Update testing for entire application
+    private void positionWindows(JFrame entityFrame, JFrame treeFrame) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        int frameHeight = Math.min(entityFrame.getHeight(), treeFrame.getHeight());
+        int frameWidth = (int) (screenSize.getWidth() / 4);
+
+        entityFrame.setSize(frameWidth, frameHeight);
+        treeFrame.setSize(frameWidth + 350, frameHeight);
+
+        int totalWidth = frameWidth * 2;
+        int startX = (screenSize.width - totalWidth) / 2;
+        entityFrame.setLocation(startX, (screenSize.height - frameHeight) / 2);
+        treeFrame.setLocation(startX + frameWidth, (screenSize.height - frameHeight) / 2);
+    }
+}

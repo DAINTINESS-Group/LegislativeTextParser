@@ -2,6 +2,9 @@ package org.uoi.legislativetextparser.entityextraction;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.uoi.legislativetextparser.model.Entity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +21,7 @@ public class SpecificLocationEntityExtractor extends AbstractEntityExtractor {
     }
 
     @Override
-    public List<String> extractEntities(String jsonFilePath) throws Exception {
+    public List<Entity> extractEntities(String jsonFilePath) throws Exception {
         JSONObject root = parseJsonFile(jsonFilePath);
 
         JSONArray chapters = getChapters(root);
@@ -32,7 +35,15 @@ public class SpecificLocationEntityExtractor extends AbstractEntityExtractor {
                     JSONObject article = articles.getJSONObject(j);
                     if (article.getInt("articleNumber") == articleNumber) {
                         JSONArray paragraphs = getParagraphs(article);
-                        return extractEntitiesFromParagraphs(paragraphs);
+                        List<Entity> entities = new ArrayList<>();
+                        for (int k = 0; k < paragraphs.length(); k++) {
+                            String paragraphText = paragraphs.getJSONObject(k).getJSONArray("text").getJSONObject(0).getString("text");
+                            Entity entity = extractEntityFromParagraph(paragraphText);
+                            if (entity != null) {
+                                entities.add(entity);
+                            }
+                        }
+                        return entities;
                     }
                 }
                 throw new IllegalArgumentException("Article " + articleNumber + " not found in chapter " + chapterNumber + ".");
@@ -40,4 +51,5 @@ public class SpecificLocationEntityExtractor extends AbstractEntityExtractor {
         }
         throw new IllegalArgumentException("Chapter " + chapterNumber + " not found.");
     }
+
 }
