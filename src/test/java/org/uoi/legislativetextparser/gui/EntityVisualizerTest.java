@@ -1,28 +1,34 @@
 package org.uoi.legislativetextparser.gui;
 
 import org.junit.jupiter.api.Test;
+import org.uoi.legislativetextparser.model.Entity;
 
 import javax.swing.*;
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EntityVisualizerTreeTest {
+public class EntityVisualizerTest {
 
     @Test
     public void testDisplayEntities() {
         EntityVisualizer visualizer = new EntityVisualizer();
 
-        List<String> sampleEntities = Arrays.asList("Entity1", "Entity2", "Entity3");
+        List<Entity> sampleEntities = Arrays.asList(
+                new Entity.Builder("Entity1", "Definition1").build(),
+                new Entity.Builder("Entity2", "Definition2").build(),
+                new Entity.Builder("Entity3", "Definition3").build()
+        );
 
         visualizer.displayEntities(sampleEntities);
 
         JFrame frame = visualizer.getFrame();
         assertNotNull(frame, "Frame should not be null");
         assertEquals("Entity Visualizer", frame.getTitle(), "Frame title should be 'Entity Visualizer'");
-        assertEquals(400, frame.getWidth(), "Frame width should be 400");
+        assertEquals(800, frame.getWidth(), "Frame width should be 800");
         assertEquals(600, frame.getHeight(), "Frame height should be 600");
         assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation(), "Default close operation should be EXIT_ON_CLOSE");
 
@@ -30,9 +36,11 @@ public class EntityVisualizerTreeTest {
         assertNotNull(titleLabel, "Title label should not be null");
         assertEquals("Extracted Entities", titleLabel.getText(), "Title label text should be 'Extracted Entities'");
 
-        JScrollPane scrollPane = (JScrollPane) frame.getContentPane().getComponent(1);
-        JList<?> entityList = (JList<?>) scrollPane.getViewport().getView();
+        JSplitPane splitPane = (JSplitPane) frame.getContentPane().getComponent(1);
+        JScrollPane listScrollPane = (JScrollPane) splitPane.getLeftComponent();
+        JList<?> entityList = (JList<?>) listScrollPane.getViewport().getView();
         assertNotNull(entityList, "Entity list should not be null");
+
         ListModel<?> listModel = entityList.getModel();
         Object[] actualEntities = new Object[listModel.getSize()];
         for (int i = 0; i < listModel.getSize(); i++) {
@@ -54,30 +62,42 @@ public class EntityVisualizerTreeTest {
     }
 
     @Test
-    public void testSaveEntitiesAsJson() {
+    public void testSaveEntitiesToTxt() {
         EntityVisualizer visualizer = new EntityVisualizer();
 
-        List<String> sampleEntities = Arrays.asList("Entity1", "Entity2", "Entity3");
+        List<Entity> sampleEntities = Arrays.asList(
+                new Entity.Builder("Entity1", "Definition1").build(),
+                new Entity.Builder("Entity2", "Definition2").build(),
+                new Entity.Builder("Entity3", "Definition3").build()
+        );
 
-        File tempFile = new File("testEntities.json");
+        String expectedFilePath = "src/main/resources/output/entities.txt";
+        File txtFile = new File(expectedFilePath);
 
         try {
+            if (txtFile.exists()) {
+                assertTrue(txtFile.delete(), "Existing entities.txt file should be deleted before the test");
+            }
+
+            // Display entities, which triggers automatic saving
             visualizer.displayEntities(sampleEntities);
-            visualizer.saveEntitiesAsJson(sampleEntities, tempFile);
 
-            assertTrue(tempFile.exists(), "JSON file should exist after saving");
-            assertTrue(tempFile.length() > 0, "JSON file should not be empty");
+            // Verify the file exists
+            assertTrue(txtFile.exists(), "The entities.txt file should be created automatically");
 
-            String content = new String(java.nio.file.Files.readAllBytes(tempFile.toPath()));
-            assertTrue(content.contains("Entity1"), "Content should include 'Entity1'");
-            assertTrue(content.contains("Entity2"), "Content should include 'Entity2'");
-            assertTrue(content.contains("Entity3"), "Content should include 'Entity3'");
+            // Verify file content
+            List<String> lines = Files.readAllLines(txtFile.toPath());
+            assertEquals(3, lines.size(), "The file should contain exactly 3 lines");
+
+            assertEquals("Entity1 means Definition1", lines.get(0), "First line content should match");
+            assertEquals("Entity2 means Definition2", lines.get(1), "Second line content should match");
+            assertEquals("Entity3 means Definition3", lines.get(2), "Third line content should match");
 
         } catch (Exception e) {
-            fail("No exception should occur during saveEntitiesAsJson test: " + e.getMessage());
+            fail("No exception should occur during testSaveEntitiesToTxt: " + e.getMessage());
         } finally {
-            if (tempFile.exists()) {
-                assertTrue(tempFile.delete(), "Temporary file should be deleted after test");
+            if (txtFile.exists()) {
+                assertTrue(txtFile.delete(), "entities.txt file should be deleted after the test");
             }
         }
     }

@@ -26,19 +26,19 @@ public class LawProcessor {
         this.lawConstructor = new LawConstructor();
     }
 
-    public Law processLegislativeDocument() {
+    public Law processLegislativeDocument() throws IOException {
         long startTime = System.currentTimeMillis();
         log.info("Starting legislative text processing...");
         clearChaptersDirectory();
     
-        if (!extractTextFromPDF()) return null;
-        if (!cleanText()) return null;
-        if (!splitIntoChapters()) return null;
+        if (!extractTextFromPDF()) throw new IOException("Failed to extract text from the PDF document.");;
+        if (!cleanText()) throw new IOException("Failed to clean the extracted text.");;
+        if (!splitIntoChapters()) throw new IOException("Failed to split the document into chapters.");;
     
         Law law = buildLawObject();
-        if (law == null) return null;
+        if (law == null) throw new IOException("Failed to build the law object.");;
     
-        if (!writeLawToJSON(law)) return null;
+        if (!writeLawToJSON(law)) throw new IOException("Failed to write the law object to JSON.");
 
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;

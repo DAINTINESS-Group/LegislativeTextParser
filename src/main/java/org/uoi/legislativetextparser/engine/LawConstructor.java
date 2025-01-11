@@ -97,7 +97,7 @@ public class LawConstructor {
         Pattern pattern = Pattern.compile("CHAPTER\\s+[IVXLCDM]+(?:\\s+)?(?:\\r?\\n)([A-Z][A-Z\\s\\-,]*)\n");
         Matcher matcher = pattern.matcher(chapterText);
         if (matcher.find()) {
-            return StringUtils.capitalize(matcher.group(1).toLowerCase());
+            return StringUtils.capitalize(matcher.group(1).toLowerCase().replace("\n", ""));
         }
         return "Could not extract chapter title";
     }
@@ -108,7 +108,7 @@ public class LawConstructor {
      * @param articleText The String object representing the article's text.
      * @return The title of the article.
      */
-    private static String extractArticleTitle(String articleText) {
+    static String extractArticleTitle(String articleText) {
         String[] lines = articleText.split("\\r?\\n");
     
         for (int i = 0; i < lines.length; i++) {
@@ -116,7 +116,7 @@ public class LawConstructor {
                 for (int j = i + 1; j < lines.length; j++) {
                     String potentialTitle = lines[j].trim();
                     if (!potentialTitle.isEmpty()) {
-                        return StringUtils.capitalize(potentialTitle.toLowerCase());
+                        return StringUtils.capitalize(potentialTitle.toLowerCase().replace("\n", ""));
                     }
                 }
             }
