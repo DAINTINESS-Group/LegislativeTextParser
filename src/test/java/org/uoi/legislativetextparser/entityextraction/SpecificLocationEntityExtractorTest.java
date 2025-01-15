@@ -40,9 +40,7 @@ public class SpecificLocationEntityExtractorTest {
     public void testNoEntitiesInEmptyJson() {
         assertTrue(Files.exists(Paths.get(EMPTY_JSON_FILE_PATH)), "Empty JSON file should exist");
 
-        Exception exception = assertThrows(JSONException.class, () -> {
-            extractor.extractEntities(EMPTY_JSON_FILE_PATH);
-        });
+        Exception exception = assertThrows(JSONException.class, () -> extractor.extractEntities(EMPTY_JSON_FILE_PATH));
 
         assertEquals("JSONObject[\"chapters\"] not found.", exception.getMessage(), "Exception message mismatch");
     }
@@ -51,9 +49,7 @@ public class SpecificLocationEntityExtractorTest {
     public void testInvalidChapterOrArticle() {
         extractor = new SpecificLocationEntityExtractor(99, 99);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            extractor.extractEntities(DEFINITIONS_JSON_FILE_PATH);
-        });
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> extractor.extractEntities(DEFINITIONS_JSON_FILE_PATH));
 
         assertEquals("Chapter 99 not found.", exception.getMessage(), "Exception message mismatch");
     }

@@ -31,12 +31,12 @@ public class LawProcessor {
         log.info("Starting legislative text processing...");
         clearChaptersDirectory();
     
-        if (!extractTextFromPDF()) throw new IOException("Failed to extract text from the PDF document.");;
-        if (!cleanText()) throw new IOException("Failed to clean the extracted text.");;
-        if (!splitIntoChapters()) throw new IOException("Failed to split the document into chapters.");;
+        if (!extractTextFromPDF()) throw new IOException("Failed to extract text from the PDF document.");
+        if (!cleanText()) throw new IOException("Failed to clean the extracted text.");
+        if (!splitIntoChapters()) throw new IOException("Failed to split the document into chapters.");
     
         Law law = buildLawObject();
-        if (law == null) throw new IOException("Failed to build the law object.");;
+        if (law == null) throw new IOException("Failed to build the law object.");
     
         if (!writeLawToJSON(law)) throw new IOException("Failed to write the law object to JSON.");
 

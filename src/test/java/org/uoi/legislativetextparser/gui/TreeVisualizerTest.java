@@ -54,15 +54,15 @@ public class TreeVisualizerTest {
             assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation(), "Close operation mismatch");
 
             Component[] components = frame.getContentPane().getComponents();
-            assertTrue(components[0] instanceof JSplitPane, "First component should be a JSplitPane");
-            assertTrue(components[1] instanceof JPanel, "Second component should be a JPanel");
+            assertInstanceOf(JSplitPane.class, components[0], "First component should be a JSplitPane");
+            assertInstanceOf(JPanel.class, components[1], "Second component should be a JPanel");
 
             JSplitPane splitPane = (JSplitPane) components[0];
             JScrollPane treeScrollPane = (JScrollPane) splitPane.getLeftComponent();
             JScrollPane textScrollPane = (JScrollPane) splitPane.getRightComponent();
 
-            assertTrue(treeScrollPane.getViewport().getView() instanceof JTree, "Left split pane component should be a JTree");
-            assertTrue(textScrollPane.getViewport().getView() instanceof JTextArea, "Right split pane component should be a JTextArea");
+            assertInstanceOf(JTree.class, treeScrollPane.getViewport().getView(), "Left split pane component should be a JTree");
+            assertInstanceOf(JTextArea.class, textScrollPane.getViewport().getView(), "Right split pane component should be a JTextArea");
 
             JTree tree = (JTree) treeScrollPane.getViewport().getView();
             assertNotNull(tree.getModel(), "Tree model should not be null");
