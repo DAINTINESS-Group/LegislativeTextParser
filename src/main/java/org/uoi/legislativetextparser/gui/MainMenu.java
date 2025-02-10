@@ -1,20 +1,18 @@
 package org.uoi.legislativetextparser.gui;
 
-import org.json.JSONObject;
 import org.uoi.legislativetextparser.config.Config;
 import org.uoi.legislativetextparser.engine.LawProcessor;
 import org.uoi.legislativetextparser.entityextraction.EntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.ManualEntityExtractor;
 import org.uoi.legislativetextparser.entityextraction.SpecificLocationEntityExtractor;
+import org.uoi.legislativetextparser.model.Entity;
+import org.uoi.legislativetextparser.model.Law;
 import org.uoi.legislativetextparser.tree.LawTreeBuilder;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 public class MainMenu {
 
@@ -174,22 +172,22 @@ public class MainMenu {
             JOptionPane.showMessageDialog(frame, "Please specify both input and output paths.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        else if ((!inputPath.endsWith(".pdf")) || (!outputPath.endsWith(".json"))){
-            JOptionPane.showMessageDialog(frame, "Please ensure that input file is .pdf and output is .json.", "Error", JOptionPane.ERROR_MESSAGE);
+
+        if (!inputPath.endsWith(".pdf") || !outputPath.endsWith(".json")) {
+            JOptionPane.showMessageDialog(frame, "Input file must be a PDF and output file must be JSON.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Config config = new Config(inputPath, outputPath);
-
         try {
+            Config config = new Config(inputPath, outputPath);
             LawProcessor lawProcessor = new LawProcessor(config);
-            lawProcessor.processLegislativeDocument();
+            Law extractedLaw = lawProcessor.processLegislativeDocument();
 
             EntityExtractor extractor = definitionCheckbox.isSelected()
                     ? new SpecificLocationEntityExtractor(Integer.parseInt(chapterField.getText()), Integer.parseInt(articleField.getText()))
                     : new ManualEntityExtractor();
 
-            List<String> entities = extractor.extractEntities(outputPath);
+            List<Entity> entities = extractor.extractEntities(outputPath);
 
             if (entities.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "No entities found.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -198,26 +196,40 @@ public class MainMenu {
 
             int response = JOptionPane.showConfirmDialog(
                     frame,
-                    "Processing completed successfully",
-                    "",
+                    "Processing completed successfully!",
+                    "Confirmation",
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.INFORMATION_MESSAGE
             );
 
             if (response == JOptionPane.OK_OPTION) {
                 EntityVisualizer entityVisualizer = new EntityVisualizer();
-                entityVisualizer.displayEntities(entities.stream()
-                        .map(c -> c.substring(0, 1).toUpperCase() + c.substring(1))
-                        .collect(Collectors.toList()));
+                entityVisualizer.displayEntities(entities);
 
                 TreeVisualizer treeVisualizer = new TreeVisualizer();
-                JSONObject jsonObject = new JSONObject(Files.readString(Paths.get(outputPath)));
-                treeVisualizer.displayTree(LawTreeBuilder.buildTree(jsonObject), jsonObject, frame, Config.getCleanedLaw());
+                treeVisualizer.displayTree(LawTreeBuilder.buildTree(extractedLaw), frame);
+
+                positionWindows(entityVisualizer.getFrame(), treeVisualizer.getFrame());
             }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+    }
+
+    private void positionWindows(JFrame entityFrame, JFrame treeFrame) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        int frameHeight = Math.min(entityFrame.getHeight(), treeFrame.getHeight());
+        int frameWidth = (int) (screenSize.getWidth() / 4);
+
+        entityFrame.setSize(frameWidth, frameHeight);
+        treeFrame.setSize(frameWidth + 350, frameHeight);
+
+        int totalWidth = frameWidth * 2;
+        int startX = (screenSize.width - totalWidth) / 2;
+        entityFrame.setLocation(startX, (screenSize.height - frameHeight) / 2);
+        treeFrame.setLocation(startX + frameWidth, (screenSize.height - frameHeight) / 2);
     }
 }

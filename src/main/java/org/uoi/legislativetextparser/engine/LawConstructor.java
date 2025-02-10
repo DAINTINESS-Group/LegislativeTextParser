@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.uoi.legislativetextparser.config.Config;
 import org.uoi.legislativetextparser.model.Article;
 import org.uoi.legislativetextparser.model.Chapter;
 import org.uoi.legislativetextparser.model.Law;
@@ -22,8 +24,8 @@ public class LawConstructor {
 
     private final String chaptersDir;
 
-    public LawConstructor(String chaptersDir) {
-        this.chaptersDir = chaptersDir;
+    public LawConstructor() {
+        this.chaptersDir = Config.getChaptersDir();
     }
 
     /**
@@ -95,7 +97,7 @@ public class LawConstructor {
         Pattern pattern = Pattern.compile("CHAPTER\\s+[IVXLCDM]+(?:\\s+)?(?:\\r?\\n)([A-Z][A-Z\\s\\-,]*)\n");
         Matcher matcher = pattern.matcher(chapterText);
         if (matcher.find()) {
-            return matcher.group(1);
+            return StringUtils.capitalize(matcher.group(1).toLowerCase().replace("\n", ""));
         }
         return "Could not extract chapter title";
     }
@@ -106,7 +108,7 @@ public class LawConstructor {
      * @param articleText The String object representing the article's text.
      * @return The title of the article.
      */
-    private static String extractArticleTitle(String articleText) {
+    static String extractArticleTitle(String articleText) {
         String[] lines = articleText.split("\\r?\\n");
     
         for (int i = 0; i < lines.length; i++) {
@@ -114,7 +116,7 @@ public class LawConstructor {
                 for (int j = i + 1; j < lines.length; j++) {
                     String potentialTitle = lines[j].trim();
                     if (!potentialTitle.isEmpty()) {
-                        return potentialTitle;
+                        return StringUtils.capitalize(potentialTitle.toLowerCase().replace("\n", ""));
                     }
                 }
             }

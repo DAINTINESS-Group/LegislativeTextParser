@@ -23,26 +23,27 @@ public class LawProcessor {
 
     public LawProcessor(Config config) {
         this.config = config;
-        this.lawConstructor = new LawConstructor(Config.getChaptersDir());
+        this.lawConstructor = new LawConstructor();
     }
 
-    public void processLegislativeDocument() {
+    public Law processLegislativeDocument() throws IOException {
         long startTime = System.currentTimeMillis();
         log.info("Starting legislative text processing...");
         clearChaptersDirectory();
     
-        if (!extractTextFromPDF()) return;
-        if (!cleanText()) return;
-        if (!splitIntoChapters()) return;
+        if (!extractTextFromPDF()) throw new IOException("Failed to extract text from the PDF document.");
+        if (!cleanText()) throw new IOException("Failed to clean the extracted text.");
+        if (!splitIntoChapters()) throw new IOException("Failed to split the document into chapters.");
     
         Law law = buildLawObject();
-        if (law == null) return;
+        if (law == null) throw new IOException("Failed to build the law object.");
     
-        if (!writeLawToJSON(law)) return;
+        if (!writeLawToJSON(law)) throw new IOException("Failed to write the law object to JSON.");
 
         long seconds = (System.currentTimeMillis() - startTime) / 1000;
         long milliseconds = (System.currentTimeMillis() - startTime) % 1000;
         log.info("Total time taken: {}s and {}ms.", seconds, milliseconds);
+        return law;
     }
 
     private boolean extractTextFromPDF() {
@@ -102,7 +103,7 @@ public class LawProcessor {
     private boolean writeLawToJSON(Law law) {
         try {
             log.info("Writing the law object to JSON file...");
-            Files.writeString(new File(config.getLawJsonPath()).toPath(), law.toString());
+            Files.writeString(new File(config.getLawJsonPath()).toPath(), law.toJsonString());
             log.info("Law object written successfully.");
             return true;
         } catch (IOException e) {

@@ -53,7 +53,7 @@ public class PointSplitter {
     /**
      * Extracts subpoints (e.g., (i), (ii), etc.) from the given text.
      */
-    private static ArrayList<Point> extractSubPoints(String text) {
+    public static ArrayList<Point> extractSubPoints(String text) {
         ArrayList<Point> subPoints = new ArrayList<>();
         int subPointCounter = 1;
 
