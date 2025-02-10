@@ -42,7 +42,7 @@ public class TxtCleaner {
     public String filterFromSection(String text) {
         int startIndex = text.indexOf(START_MARKER);
         if (startIndex == -1) {
-            throw new IllegalArgumentException("Start marker not found in the text: " + START_MARKER);
+            throw new IllegalArgumentException("It seems like this document is not a legislative file. " + "\n" + "Please check your input!");
         }
         return text.substring(startIndex).trim();
     }
@@ -86,9 +86,7 @@ public class TxtCleaner {
      */
     public String preprocessText(String rawText) {
         return rawText.replace("`", "").replace("▌", "");
-                //.replaceAll("[ \\t]+", " ").trim();
     }
-
 
     /**
      * Saves the cleaned text to a file at ../resources/output/cleanedSelectedLaw.txt.
