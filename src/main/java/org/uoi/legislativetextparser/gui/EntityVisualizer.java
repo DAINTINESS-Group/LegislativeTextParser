@@ -210,7 +210,7 @@ public class EntityVisualizer {
         File file = new File("src/main/resources/output/entities.txt");
         try (FileWriter writer = new FileWriter(file)) {
             for (Entity entity : entities) {
-                writer.write(entity.getName() + " means " + entity.getDefinition() + System.lineSeparator());
+                writer.write(entity.getDefinition() + System.lineSeparator());
             }
         }
     }
